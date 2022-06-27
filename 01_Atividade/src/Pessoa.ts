@@ -61,14 +61,8 @@ export default class Pessoa{
         console.log("Nome: " + this._nome)
         console.log("CPF: " + this._cpf)
         console.log("RG: " + this._rg)
+        console.log("Sexo: " + this._sexo)
 
-        if(this._sexo == Sexo.MASCULINO){
-            console.log("Sexo: Masculino")
-        }else if(this._sexo == Sexo.FEMININO){
-            console.log("Sexo: Feminino")
-        }else{
-            console.log("Sexo: Indefinido")
-        }
 
         // Endereço
 
