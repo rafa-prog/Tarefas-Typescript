@@ -9,8 +9,8 @@ export default class Director{
     constructor(private _builder: IBuilder){}
 
     constructHotDog(){
-        this._builder.setSanduiche(SanduicheType.HOTDOG)
-        this._builder.setBread(Bread.BHOTDOG)
+        this._builder.setSanduicheType(SanduicheType.HOTDOG)
+        this._builder.setBread(Bread.HOTDOG)
         this._builder.setProtein(Protein.SALSICHA)
 
         this._builder.addSalad(Salad.PALMITO)
@@ -21,7 +21,8 @@ export default class Director{
     }
 
     constructXis(){
-        this._builder.setSanduiche(SanduicheType.XIS)
+        this._builder.setSanduicheType(SanduicheType.XIS)
+        this._builder.setBread(Bread.HAMBURGUER)
         this._builder.setProtein(Protein.SOJA)
 
         this._builder.addSalad(Salad.ALFACE)

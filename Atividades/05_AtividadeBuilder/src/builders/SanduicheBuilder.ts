@@ -1,6 +1,7 @@
 import Bread from "../components/Bread";
 import Protein from "../components/Protein";
 import Salad from "../components/Salad";
+import SanduicheType from "../components/SanduicheType";
 import Sauce from "../components/Sauce";
 import Sanduiche from "../products/Sanduiche";
 import IBuilder from "./IBuilder";
@@ -14,8 +15,8 @@ export default class SanduicheBuilder implements IBuilder{
     getSanduiche() : Sanduiche {
         return this._sanduiche
     }
-    setSanduiche(values: Sanduiche) {
-        this._sanduiche = values
+    setSanduicheType(values: SanduicheType) {
+        this._sanduiche.sanduicheType = values
     }
     setBread(bread: Bread) {
         this._sanduiche.bread = bread

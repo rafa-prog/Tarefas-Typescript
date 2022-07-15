@@ -4,8 +4,8 @@ enum Bread{
     AVEIA = "Aveia",
     GERGELIM = "Gergelim",
     BAGUETE = "Baguete",
-    BHOTDOG = "BHotDog",
-    BHAMBURGUER = "BHamburguer",
+    HOTDOG = "HotDog",
+    HAMBURGUER = "Hamburguer",
 }
 
 export default Bread

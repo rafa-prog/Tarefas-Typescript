@@ -1,7 +1,7 @@
 export default interface IBuilder{
     reset(): void
     getSanduiche()
-    setSanduiche(SanduicheType)
+    setSanduicheType(SanduicheType)
     setBread(bread)
     setProtein(protein)
     addSalad(salad)
