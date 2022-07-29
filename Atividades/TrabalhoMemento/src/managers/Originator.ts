@@ -1,5 +1,5 @@
-import ConcreteMemento from "./ConcreteMemento"
-import IMemento from "./IMemento"
+import ConcreteMemento from "../mementos/ConcreteMemento"
+import IMemento from "../mementos/IMemento"
 
 export default class Originator {
     private _state: String

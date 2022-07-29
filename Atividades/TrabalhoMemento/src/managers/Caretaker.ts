@@ -1,4 +1,4 @@
-import IMemento from "./IMemento";
+import IMemento from "../mementos/IMemento";
 import Originator from "./Originator";
 
 export default class Caretaker {

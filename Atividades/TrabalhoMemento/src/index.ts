@@ -1,5 +1,5 @@
-import Caretaker from "./Caretaker";
-import Originator from "./Originator";
+import Caretaker from "./managers/Caretaker";
+import Originator from "./managers/Originator";
 
 function generateMemento(originator: Originator, newState: String) {
     originator.alterState(newState)
@@ -47,6 +47,5 @@ for(let i = 0; i < loop; i++){
     saveMemento(caretaker)
     showMemento(caretaker)
 }
-
 
 
