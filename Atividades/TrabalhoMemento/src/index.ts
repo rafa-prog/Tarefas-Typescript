@@ -34,7 +34,7 @@ generateMemento(originator, "estado2")
 saveMemento(caretaker)
 showMemento(caretaker)
 
-let loop = 4
+let loop = 12
 
 for(let i = 0; i < loop; i++){
     let Symbols: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -51,4 +51,4 @@ for(let i = 0; i < loop; i++){
 caretaker.undo()
 caretaker.getSaveStates()
 
-
+ 
