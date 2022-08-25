@@ -23,9 +23,8 @@ export class HomePage {
   }
 
   exibirInfo(contato: Contato) {
-    let nome = "Nome: " + contato.nome
     let info = "Telefone: " + contato.telefone + "\nGênero: " + contato.genero + "\nData Nascimento: " + contato.dataNascimento
-    this.presentAlert(nome, "", info)
+    this.presentAlert(contato.nome, "", info)
   }
 
   async presentAlert(header: string, subheader: string, message: string) {

@@ -23,8 +23,6 @@ export class CadastroPage implements OnInit {
   }
 
   cadastrar() {
-    console.log(this.genero)
-    console.log(this.dataNascimento)
     if(this.validar(this.nome) && this.validar(this.telefone)
     && this.validar(this.genero) && this.validar(this.dataNascimento)) {
       let contato: Contato = new Contato(this.nome, this.telefone, this.genero, this.dataNascimento)
