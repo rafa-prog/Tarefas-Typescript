@@ -23,19 +23,7 @@ export class HomePage {
   }
 
   exibirInfo(contato: Contato) {
-    let info = "Telefone: " + contato.telefone + "\nGênero: " + contato.genero + "\nData Nascimento: " + contato.dataNascimento
-    this.presentAlert(contato.nome, "", info)
+    contato.info = !contato.info
   }
-
-  async presentAlert(header: string, subheader: string, message: string) {
-    const alert = await this.alertController.create({
-      header: header,
-      subHeader: subheader,
-      message: message,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  } 
 
 }

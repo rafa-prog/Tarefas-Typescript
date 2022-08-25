@@ -8,9 +8,19 @@
 
 <ion-content>
   <!-- List of Text Items -->
-  <ion-list>
+  <ion-list *ngIf="contatos.length > 0">
     <ion-item *ngFor="let contato of contatos" (click)="exibirInfo(contato)">
-      <ion-label>{{ contato.nome }}</ion-label>
+      <div *ngIf="!contato.info">
+        <ion-label>{{ contato.nome }}</ion-label>
+      </div>
+      <div class="div-info" *ngIf="contato.info">
+        <ion-label id="nome">{{ contato.nome }}</ion-label>
+        <div class="div-info">
+          <ion-label><ion-item>Telefone: {{ contato.telefone }}</ion-item></ion-label>
+          <ion-label><ion-item>Gênero: {{ contato.genero }}</ion-item></ion-label>
+          <ion-label><ion-item>Data de nascimento: {{ contato.dataNascimento }}</ion-item></ion-label>
+        </div>
+      </div>
     </ion-item>
   </ion-list>
 
