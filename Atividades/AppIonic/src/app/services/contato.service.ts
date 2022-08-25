@@ -12,6 +12,7 @@ export class ContatoService {
   public get contatos(): Contato[] {
     return this._contatos;
   }
+
   public addContatos(contato: Contato) {
     this._contatos.push(contato);
   }

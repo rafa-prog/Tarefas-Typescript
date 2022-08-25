@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="toolbar-container">
     <ion-title class="titulo">
-      Agenda de contatos
+      Contatos
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,14 +9,8 @@
 <ion-content>
   <!-- List of Text Items -->
   <ion-list>
-    <ion-item *ngFor="let contato of contatos">
+    <ion-item *ngFor="let contato of contatos" (click)="exibirInfo(contato)">
       <ion-label>{{ contato.nome }}</ion-label>
-      <ion-label>{{ contato.telefone }}</ion-label>
-
-      <!-- List of Text Items 
-      <ion-label>{{ contato.genero }}</ion-label>
-      <ion-label>{{ contato.dataNascimento }}</ion-label>
-      -->
     </ion-item>
   </ion-list>
 
