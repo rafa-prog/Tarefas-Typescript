@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { Contato } from '../class/contato';
-import { ContatoService } from '../services/contato.service';
+import { Contato } from '../../models/contato';
+import { ContatoService } from '../../services/contato.service';
 
 @Component({
   selector: 'app-home',

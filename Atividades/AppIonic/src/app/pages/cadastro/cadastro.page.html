@@ -24,7 +24,7 @@
       <ion-datetime-button datetime="datetime" ></ion-datetime-button>
       <ion-modal [keepContentsMounted]="true">
         <ng-template>
-          <ion-datetime id="datetime" max="2022-05-31"
+          <ion-datetime id="datetime" max="{{ data }}"
           presentation="date" [(ngModel)]="dataNascimento"></ion-datetime>
         </ng-template>
       </ion-modal>
