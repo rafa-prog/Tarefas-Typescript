@@ -1,9 +1,21 @@
 #nome {
-    margin-right: -20rem;
+    margin-right: 20rem;
     text-align: center;
+    display: block;
+    flex: auto;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    box-sizing: border-box;
     padding-bottom: 0.6rem;
 }
 
 .div-info {
+    display: block;
+    flex: auto;
+    flex-direction: column;
+    align-items: center;
     margin-right: -20rem;
 }
