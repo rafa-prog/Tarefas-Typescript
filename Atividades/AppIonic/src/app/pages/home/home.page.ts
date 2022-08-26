@@ -22,6 +22,11 @@ export class HomePage {
     this.router.navigate(['/cadastro'])
   }
 
+  irParaDetalhar(contato: Contato) {
+    this.router.navigateByUrl('/detalhar', 
+    {state: {objeto:contato}})
+  }
+
   exibirInfo(contato: Contato) {
     contato.info = !contato.info
   }

@@ -7,7 +7,10 @@ import { Contato } from '../models/contato';
 export class ContatoService {
   private _contatos: Contato[] = [];
 
-  constructor() { }
+  constructor() {
+    let contato = new Contato("Rafael", 132, "masculino", "2002-10-10")
+    this.addContatos(contato)
+  }
 
   public get contatos(): Contato[] {
     return this._contatos;

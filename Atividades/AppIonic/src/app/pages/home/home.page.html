@@ -9,19 +9,16 @@
 <ion-content>
   <!-- List of Text Items -->
   <ion-list *ngIf="contatos.length > 0">
-    <ion-item *ngFor="let contato of contatos" (click)="exibirInfo(contato)">
-      <div *ngIf="!contato.info">
-        <ion-label>{{ contato.nome }}</ion-label>
-      </div>
-      <div class="div-info" *ngIf="contato.info">
-        <ion-label id="nome">{{ contato.nome }}</ion-label>
-        <div class="div-info">
-          <ion-label><ion-item>Telefone: {{ contato.telefone }}</ion-item></ion-label>
-          <ion-label><ion-item>Gênero: {{ contato.genero }}</ion-item></ion-label>
-          <ion-label><ion-item>Data de nascimento: {{ contato.dataNascimento }}</ion-item></ion-label>
-        </div>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let contato of contatos" (click)="exibirInfo(contato)">
+        <ion-item>
+          <ion-label>{{ contato.nome }}</ion-label>
+        </ion-item>
+          <ion-item-options>
+            <ion-item-option (click)="irParaDetalhar(contato)">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

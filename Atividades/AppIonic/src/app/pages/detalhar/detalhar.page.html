@@ -1,9 +1,43 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>detalhar</ion-title>
+    <ion-title>Detalhes do contato</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input disabled="{{disabled}}" placeholder="nome" [(ngModel)]="nome"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input disabled="{{disabled}}" placeholder="telefone" type="number" [(ngModel)]="telefone"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select disabled="{{disabled}}" placeholder="Selecione o Gênero" [(ngModel)]="genero">
+        <ion-select-option value="masculino">Masculino</ion-select-option>
+        <ion-select-option value="feminino">Feminino</ion-select-option>
+        <ion-select-option value="não declarar">Não declarar</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      Data de nascimento: 
+      <ion-datetime-button disabled="{{disabled}}" datetime="datetime" ></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime id="datetime" max="{{ data }}"
+          presentation="date" [(ngModel)]="dataNascimento"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+  </ion-list>
+  
+  <ion-button disabled="{{disabled}}" (click)="salvar()" expand="block" 
+  fill="outline">Salvar</ion-button>
+
+  <ion-button disabled="{{disabled}}" (click)="excluir()" expand="block" 
+  color="danger" fill="outline">Excluir</ion-button>
+
+  <ion-button (click)="editar()" expand="block" 
+  fill="outline">Editar</ion-button>
 
 </ion-content>
