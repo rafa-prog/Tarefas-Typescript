@@ -3,14 +3,12 @@ export class Contato {
     private _telefone: number
     private _genero: string
     private _dataNascimento: string
-    private _info: boolean
 
     constructor(nome: string, telefone: number, genero: string, dataNascimento: string) {
         this.nome = nome
         this.telefone = telefone
         this._genero = genero
         this._dataNascimento = dataNascimento
-        this._info = false
     }
 
     public get nome(): string {
@@ -43,14 +41,6 @@ export class Contato {
 
     public set dataNascimento(value: string) {
         this._dataNascimento = value
-    }
-
-    public get info(): boolean {
-        return this._info
-    }
-    
-    public set info(value: boolean) {
-        this._info = value
     }
 
 }

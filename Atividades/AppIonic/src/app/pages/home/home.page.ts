@@ -12,8 +12,7 @@ import { ContatoService } from '../../services/contato.service';
 export class HomePage {
   contatos: Contato[];
 
-  constructor(private router: Router,
-    private alertController: AlertController, 
+  constructor(private router: Router, 
     private contatoService: ContatoService) {
     this.contatos = this.contatoService.contatos
   }
@@ -25,10 +24,6 @@ export class HomePage {
   irParaDetalhar(contato: Contato) {
     this.router.navigateByUrl('/detalhar', 
     {state: {objeto:contato}})
-  }
-
-  exibirInfo(contato: Contato) {
-    contato.info = !contato.info
   }
 
 }
