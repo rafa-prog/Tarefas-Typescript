@@ -1,10 +1,13 @@
 export class Contato {
+    private _id: any
     private _nome: string
     private _telefone: number
     private _genero: string
     private _dataNascimento: string
 
     constructor(nome: string, telefone: number, genero: string, dataNascimento: string) {
+        let chave = new Date()
+        this._id = chave.getTime()
         this.nome = nome
         this.telefone = telefone
         this._genero = genero
@@ -43,4 +46,19 @@ export class Contato {
         this._dataNascimento = value
     }
 
+<<<<<<< HEAD
+=======
+    public get info(): boolean {
+        return this._info
+    }
+    
+    public set info(value: boolean) {
+        this._info = value
+    }
+
+    public get id(): any {
+        return this._id
+    }
+
+>>>>>>> 9294f91 (Commit update e delete)
 }

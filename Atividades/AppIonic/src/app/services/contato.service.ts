@@ -19,4 +19,31 @@ export class ContatoService {
   public addContatos(contato: Contato) {
     this._contatos.push(contato);
   }
+
+  public updateContatos(contato: Contato, nome: string,
+    telefone: number, genero: string, dataNascimento: string): boolean {
+      
+    for(let c of this._contatos) {
+      if(c.id === contato.id) {
+        c.nome = nome
+        c.telefone = telefone
+        c.genero = genero
+        c.dataNascimento = dataNascimento
+        return true
+      }
+    }
+
+    return false
+  }
+
+  public deleteContato(contato: Contato): boolean {
+    for(let i = 0; i < this._contatos.length; i++) {
+      if(this._contatos[i].id === contato.id) {
+        this._contatos.splice(i, 1)
+        return true
+      }
+    }
+
+    return false
+  }
 }
