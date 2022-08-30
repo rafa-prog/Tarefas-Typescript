@@ -46,19 +46,8 @@ export class Contato {
         this._dataNascimento = value
     }
 
-<<<<<<< HEAD
-=======
-    public get info(): boolean {
-        return this._info
-    }
-    
-    public set info(value: boolean) {
-        this._info = value
-    }
-
     public get id(): any {
         return this._id
     }
 
->>>>>>> 9294f91 (Commit update e delete)
 }
