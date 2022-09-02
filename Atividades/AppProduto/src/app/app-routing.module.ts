@@ -12,12 +12,20 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'cadastro',
-    loadChildren: () => import('./pages/cadastro/cadastro.module').then( m => m.CadastroPageModule)
+    path: 'cadastro-produto',
+    loadChildren: () => import('./pages/cadastro-produto/cadastro-produto.module').then( m => m.CadastroProdutoPageModule)
   },
   {
-    path: 'detalhes',
-    loadChildren: () => import('./pages/detalhes/detalhes.module').then( m => m.DetalhesPageModule)
+    path: 'detalhes-produto',
+    loadChildren: () => import('./pages/detalhes-produto/detalhes-produto.module').then( m => m.DetalhesProdutoPageModule)
+  },
+  {
+    path: 'cadastro-provedor',
+    loadChildren: () => import('./pages/cadastro-provedor/cadastro-provedor.module').then( m => m.CadastroProvedorPageModule)
+  },
+  {
+    path: 'detalhes-provedor',
+    loadChildren: () => import('./pages/detalhes-provedor/detalhes-provedor.module').then( m => m.DetalhesProvedorPageModule)
   },
 ];
 
