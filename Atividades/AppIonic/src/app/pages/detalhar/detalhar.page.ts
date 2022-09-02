@@ -28,6 +28,7 @@ export class DetalharPage implements OnInit {
     this.contato = nav.extras.state.objeto
     console.log(this.contato)
     this.nome = this.contato.nome
+    // nome: ['', Validators.required],
     this.telefone = this.contato.telefone
     this.genero = this.contato.genero
     this.dataNascimento = this.contato.dataNascimento

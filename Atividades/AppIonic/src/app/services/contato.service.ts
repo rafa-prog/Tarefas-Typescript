@@ -9,14 +9,14 @@ export class ContatoService {
 
   constructor() {
     let contato = new Contato("Rafael", 132, "masculino", "2002-10-10")
-    this.addContatos(contato)
+    this.addContato(contato)
   }
 
   public get contatos(): Contato[] {
     return this._contatos;
   }
 
-  public addContatos(contato: Contato) {
+  public addContato(contato: Contato) {
     this._contatos.push(contato);
   }
 
