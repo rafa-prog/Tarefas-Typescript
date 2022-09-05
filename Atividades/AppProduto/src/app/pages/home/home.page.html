@@ -7,11 +7,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div *ngIf="true">
+  <div *ngIf="produtos.length > 0">
     <ion-list>
-      <ion-item>
-        teste
+      <ion-item *ngFor="let produto of produtos">
+        {{ produto.nome }}
       </ion-item>
     </ion-list>
   </div>
+  <ion-button disabled="{{ !disableCadProd }}" (click)="irParaCadastro()" expand="block">Cadastrar produto</ion-button>
 </ion-content>

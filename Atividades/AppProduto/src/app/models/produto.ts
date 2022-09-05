@@ -88,5 +88,4 @@ export class Produto {
     public set dataCompra(dataCompra: string) {
         this._dataCompra = dataCompra
     }
-    
 }
