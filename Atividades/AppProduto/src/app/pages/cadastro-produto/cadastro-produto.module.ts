@@ -5,10 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { CadastroProdutoPageRoutingModule } from './cadastro-produto-routing.module';
-
 import { CadastroProdutoPage } from './cadastro-produto.page';
-
-import { BrMaskerModule } from 'br-mask';
 
 @NgModule({
   imports: [
@@ -17,7 +14,6 @@ import { BrMaskerModule } from 'br-mask';
     IonicModule,
     CadastroProdutoPageRoutingModule,
     ReactiveFormsModule,
-    BrMaskerModule,
   ],
   declarations: [CadastroProdutoPage]
 })

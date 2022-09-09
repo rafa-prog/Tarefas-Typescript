@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Provedores
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="provedores.length > 0">
+    <ion-list>
+      <ion-item *ngFor="let provedor of provedores" (click)="detalhesProvedor(provedor)">
+        <ion-label>{{ provedor.nome }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-button (click)="irParaProdutos()" expand="block">Produtos</ion-button>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="dark" (click)="irParaCadastro()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  
+</ion-content>

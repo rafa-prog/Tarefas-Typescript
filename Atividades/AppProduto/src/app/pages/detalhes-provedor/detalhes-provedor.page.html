@@ -1,9 +1,97 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>detalhes-provedor</ion-title>
+    <ion-title>{{ provedor.nome }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-item>
+    <ion-label>Editar</ion-label>
+    <ion-toggle color="success" (ionChange)="editar()"></ion-toggle>
+  </ion-item>
 
+  <ion-item disabled="true">
+    <ion-label position="stacked">id</ion-label>
+    <ion-input value="{{ provedor.id }}"></ion-input>
+  </ion-item>
+
+  <form [formGroup]="formDetProv" (ngSubmit)="submitForm()">
+    <ion-item disabled="{{ disabled }}">
+      <ion-label position="floating">nome*</ion-label>
+      <ion-input formControlName="nome"></ion-input>
+      <div *ngIf="((errorControl.nome.touched) ||
+      (errorControl.nome.dirty) && errorControl.nome.errors)">
+        <span *ngIf="errorControl.nome.errors?.required">Nome obrigatório!</span>
+        <span *ngIf="errorControl.nome.errors?.minlength">Nome precisa ser maior!</span>
+      </div>
+    </ion-item>
+  
+      <ion-item disabled="{{ disabled }}">
+        <ion-label position="floating">título</ion-label>
+        <ion-input formControlName="titulo"></ion-input>
+      </ion-item>
+  
+      <ion-item disabled="{{ disabled }}">
+        <ion-label position="floating">cnpj*</ion-label>
+        <ion-input [brmasker]="{person: true}" formControlName="cnpj"></ion-input>
+        <div *ngIf="((errorControl.cnpj.touched) ||
+        (errorControl.cnpj.dirty) && errorControl.cnpj.errors)">
+          <span *ngIf="errorControl.cnpj.errors?.required">CNPJ obrigatório!</span>
+          <span *ngIf="errorControl.cnpj.errors?.minlength">CNPJ precisa ser maior!</span>
+        </div>
+      </ion-item>
+  
+      <ion-item disabled="{{ disabled }}">
+        <ion-label position="floating">cep*</ion-label>
+        <ion-input formControlName="cep"></ion-input>
+        <div *ngIf="((errorControl.cep.touched) ||
+        (errorControl.cep.dirty) && errorControl.cep.errors)">
+          <span *ngIf="errorControl.cep.errors?.required">CEP obrigatório!</span>
+          <span *ngIf="errorControl.cep.errors?.minlength">CEP precisa ser maior!</span>
+        </div>
+      </ion-item>
+
+      <ion-item disabled="{{ disabled }}">
+        <ion-label position="floating">endereco*</ion-label>
+        <ion-input formControlName="endereco"></ion-input>
+        <div *ngIf="((errorControl.endereco.touched) ||
+        (errorControl.endereco.dirty) && errorControl.endereco.errors)">
+          <span *ngIf="errorControl.endereco.errors?.required">Endereço obrigatório!</span>
+          <span *ngIf="errorControl.endereco.errors?.minlength">Endereço precisa ser maior!</span>
+        </div>
+      </ion-item>
+  
+      <ion-item disabled="{{ disabled }}">
+        <ion-label position="floating">telefone*</ion-label>
+        <ion-input formControlName="telefone" [brmasker]="{phone: true}"></ion-input>
+        <div *ngIf="((errorControl.telefone.touched) ||
+        (errorControl.telefone.dirty) && errorControl.telefone.errors)">
+          <span *ngIf="errorControl.telefone.errors?.required">Telefone obrigatório!</span>
+          <span *ngIf="errorControl.telefone.errors?.minlength">Telefone precisa ser maior!</span>
+        </div>
+      </ion-item>
+  
+      <ion-item disabled="{{ disabled }}">
+        <ion-label position="stacked">data do contrato</ion-label>
+        <ion-datetime-button datetime="datetime" ></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="datetime" max="{{ data }}"
+            presentation="date" formControlName="dataContrato"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+        <div *ngIf="((errorControl.dataContrato.touched) ||
+        (errorControl.dataContrato.dirty) && errorControl.dataContrato.errors)">
+          <span *ngIf="errorControl.dataContrato.errors?.required">
+            Data do contrato obrigatória!</span>
+        </div>
+      </ion-item>
+  
+      <ion-button disabled="{{ disabled }}" type="submit" expand="block" 
+      fill="outline">Editar</ion-button>
+
+      <ion-button disabled="{{ disabled }}" color="danger" (click)="delete()"
+      expand="block" fill="outline">Excluir</ion-button>
+
+  </form>
 </ion-content>

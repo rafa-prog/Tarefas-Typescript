@@ -1,4 +1,3 @@
-import { genId } from "./FGenId"
 import { Provedor } from "./provedor"
 
 export class Produto {
@@ -15,7 +14,6 @@ export class Produto {
     constructor(nome: string, provedor: Provedor, 
     info: string, quantidade: number, preco: number, 
     retornoProvedor: number, dataCompra: string) {
-        this._id = genId()
         this._nome = nome
         this._provedor = provedor
         this._info = info

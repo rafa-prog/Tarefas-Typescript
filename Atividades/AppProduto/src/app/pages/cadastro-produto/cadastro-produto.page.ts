@@ -12,11 +12,12 @@ import { ProvedorService } from 'src/app/services/provedor.service';
   styleUrls: ['./cadastro-produto.page.scss'],
 })
 export class CadastroProdutoPage implements OnInit {
+  isSubmitted: boolean = false
   formCadProd: FormGroup
+  
   provedores: Provedor[]
   data: string
-  isSubmitted: boolean = false
-
+  
   constructor(private router: Router,
   private formBuilder: FormBuilder,
   private alertController: AlertController,

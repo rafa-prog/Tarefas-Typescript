@@ -1,71 +1,74 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>cadastro-produto</ion-title>
+    <ion-title>Cadastrar produto</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form [formGroup]="formCadProd" (ngSubmit)="submitForm()">
     <ion-item>
-      <ion-input placeholder="Nome" formControlName="nome"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.nome.touched) ||
-    (errorControl.nome.dirty) && errorControl.nome.errors)">
-      <span *ngIf="errorControl.nome.errors?.required">Nome obrigatório!</span>
+      <ion-label position="floating">nome</ion-label>
+      <ion-input formControlName="nome"></ion-input>
+      <div *ngIf="((errorControl.nome.touched) ||
+      (errorControl.nome.dirty) && errorControl.nome.errors)">
+        <span *ngIf="errorControl.nome.errors?.required">Nome obrigatório!</span>
+        <span *ngIf="errorControl.nome.errors?.minlength">Nome precisa ser maior!</span>
+      </div>
     </ion-item>
 
     <ion-item>
-      <ion-select placeholder="Selecione o provedor" formControlName="provedor">
+      <ion-label position="floating">provedor</ion-label>
+      <ion-select formControlName="provedor">
         <ion-select-option *ngFor="let provedor of provedores">{{ provedor.nome }}</ion-select-option>
       </ion-select>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.provedor.touched) ||
+      <div *ngIf="((errorControl.provedor.touched) ||
       (errorControl.provedor.dirty) && errorControl.provedor.errors)">
-      <span *ngIf="errorControl.provedor.errors?.required">Provedor obrigatório!</span>
+        <span *ngIf="errorControl.provedor.errors?.required">Provedor obrigatório!</span>
+      </div>
     </ion-item>
 
     <ion-item>
-      <ion-textarea placeholder="Digite mais sobre o produto..."
-      formControlName="info"></ion-textarea>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.info.touched) ||
-    (errorControl.info.dirty) && errorControl.info.errors)">
-      <span *ngIf="errorControl.info.errors?.required">Descrição obrigatória!</span>
-    </ion-item>
-
-    <ion-item>
-      <ion-input type="number" placeholder="Quantidade do produto" 
-      formControlName="quantidade"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.quantidade.touched) ||
-    (errorControl.quantidade.dirty) && errorControl.quantidade.errors)">
-      <span *ngIf="errorControl.quantidade.errors?.required">Quantidade obrigatória!</span>
-      <span *ngIf="errorControl.quantidade.errors?.min">Quantidade inválida!</span>
+      <ion-label position="floating">descrição</ion-label>
+      <ion-textarea formControlName="info"></ion-textarea>
+      <div *ngIf="((errorControl.info.touched) ||
+      (errorControl.info.dirty) && errorControl.info.errors)">
+        <span *ngIf="errorControl.info.errors?.required">Descrição obrigatória!</span>
+      </div>
     </ion-item>
 
     <ion-item>
-      <ion-input type="number" placeholder="Preço por unidade do produto" 
-      formControlName="preco"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.preco.touched) ||
-    (errorControl.preco.dirty) && errorControl.preco.errors)">
-      <span *ngIf="errorControl.preco.errors?.required">Preço obrigatório!</span>
-      <span *ngIf="errorControl.preco.errors?.min">Preço inválido!</span>
-    </ion-item>
-
-    <ion-item>
-      <ion-input type="number" class="num_percent" placeholder="retorno p/unidade do provedor" 
-      formControlName="retornoProvedor"></ion-input>
-      <span>%</span>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.retornoProvedor.touched) ||
-    (errorControl.retornoProvedor.dirty) && errorControl.retornoProvedor.errors)">
-      <span *ngIf="errorControl.retornoProvedor.errors?.required">Retorno obrigatório!</span>
-      <span *ngIf="errorControl.retornoProvedor.errors?.min">Retorno inválido!</span>
-      <span *ngIf="errorControl.retornoProvedor.errors?.max">Retorno inválido!</span>
+      <ion-label position="floating">quantidade do produto</ion-label>
+      <ion-input type="number" formControlName="quantidade"></ion-input>
+      <div *ngIf="((errorControl.quantidade.touched) ||
+      (errorControl.quantidade.dirty) && errorControl.quantidade.errors)">
+        <span *ngIf="errorControl.quantidade.errors?.required">Quantidade obrigatória!</span>
+        <span *ngIf="errorControl.quantidade.errors?.min">Quantidade inválida!</span>
+      </div>
     </ion-item>
 
     <ion-item>
+      <ion-label position="floating">preço p/ unidade</ion-label>
+      <ion-input type="number" formControlName="preco"></ion-input>
+      <div *ngIf="((errorControl.preco.touched) ||
+      (errorControl.preco.dirty) && errorControl.preco.errors)">
+        <span *ngIf="errorControl.preco.errors?.required">Preço obrigatório!</span>
+        <span *ngIf="errorControl.preco.errors?.min">Preço inválido!</span>
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">retorno p/ unidade para o provedor</ion-label>
+      <ion-input type="number" class="num_percent" formControlName="retornoProvedor"></ion-input>
+      <div *ngIf="((errorControl.retornoProvedor.touched) ||
+      (errorControl.retornoProvedor.dirty) && errorControl.retornoProvedor.errors)">
+        <span *ngIf="errorControl.retornoProvedor.errors?.required">Retorno obrigatório!</span>
+        <span *ngIf="errorControl.retornoProvedor.errors?.min">Retorno inválido!</span>
+        <span *ngIf="errorControl.retornoProvedor.errors?.max">Retorno inválido!</span>
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">data da compra</ion-label>
       <ion-datetime-button datetime="datetime" ></ion-datetime-button>
       <ion-modal [keepContentsMounted]="true">
         <ng-template>
@@ -73,11 +76,11 @@
           presentation="date" formControlName="dataCompra"></ion-datetime>
         </ng-template>
       </ion-modal>
-    </ion-item>
-    <ion-item *ngIf="((errorControl.dataCompra.touched) ||
+      <div *ngIf="((errorControl.dataCompra.touched) ||
       (errorControl.dataCompra.dirty) && errorControl.dataCompra.errors)">
-      <span *ngIf="errorControl.dataCompra.errors?.required">
-        Data da compra obrigatória!</span>
+        <span *ngIf="errorControl.dataCompra.errors?.required">
+          Data da compra obrigatória!</span>
+      </div>
     </ion-item>
 
     <ion-button type="submit" expand="block" fill="outline">Cadastrar</ion-button>

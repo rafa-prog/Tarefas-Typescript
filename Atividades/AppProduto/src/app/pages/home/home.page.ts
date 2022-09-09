@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
 import { Produto } from 'src/app/models/produto';
 import { Provedor } from 'src/app/models/provedor';
 import { ProdutoService } from 'src/app/services/produto.service';
@@ -17,18 +16,22 @@ export class HomePage {
   disableCadProd: boolean = true
 
   constructor(private router: Router,
-  private alertController: AlertController,
   private provedorService: ProvedorService,
   private produtoService: ProdutoService) {
       this.produtos = produtoService.readProdutos()
       this.provedores = provedorService.readProvedor()
   }
 
+  irParaProvedores() {
+    this.router.navigate(['/provedores'])
+  }
+
   irParaCadastro() {
     this.router.navigate(['/cadastro-produto'])
   }
 
-  irParaDetalhes() {
-    this.router.navigate(['/detalhes-produto'])
+  detalhesProduto(produto: Produto) {
+    this.router.navigateByUrl('/detalhes-produto',
+    {state: {objeto:produto}})
   }
 }
