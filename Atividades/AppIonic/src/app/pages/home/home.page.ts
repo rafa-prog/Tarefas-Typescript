@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ContatoFirebaseService } from 'src/app/services/contato.firebase.service';
 import { Contato } from '../../models/contato';
-import { ContatoService } from '../../services/contato.service';
 
 @Component({
   selector: 'app-home',
@@ -13,8 +12,20 @@ export class HomePage {
   contatos: Contato[];
 
   constructor(private router: Router, 
-    private contatoService: ContatoService) {
-    this.contatos = this.contatoService.contatos
+    private contatofs: ContatoFirebaseService) {
+      this.carregarContatos()
+  }
+
+  carregarContatos() {
+    this.contatofs.readContatos()
+    .subscribe(res => {
+      this.contatos = res.map(c => {
+        return {
+          id: c.payload.doc.id,
+          ...c.payload.doc.data() as Contato
+        } as Contato
+      })
+    })
   }
 
   irParaCadastro() {

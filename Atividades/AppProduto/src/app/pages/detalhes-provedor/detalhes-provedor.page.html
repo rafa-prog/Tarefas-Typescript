@@ -38,6 +38,7 @@
         (errorControl.cnpj.dirty) && errorControl.cnpj.errors)">
           <span *ngIf="errorControl.cnpj.errors?.required">CNPJ obrigatório!</span>
           <span *ngIf="errorControl.cnpj.errors?.minlength">CNPJ precisa ser maior!</span>
+          <span *ngIf="errorControl.cnpj.errors?.maxlength">CNPJ precisa ser menor!</span>
         </div>
       </ion-item>
   

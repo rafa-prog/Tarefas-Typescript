@@ -32,7 +32,7 @@ export class CadastroProvedorPage implements OnInit {
         nome: ['', [Validators.required, Validators.minLength(4)]],
         titulo: [''],
         cnpj: ['', [Validators.required, Validators.minLength(14)]],
-        cep: ['', [Validators.required, Validators.minLength(8), Validators.minLength(9)]],
+        cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(9)]],
         endereco: ['', [Validators.required, Validators.minLength(8)]],
         telefone: ['', [Validators.required, Validators.minLength(14)]],
         dataContrato: ['', [Validators.required]],

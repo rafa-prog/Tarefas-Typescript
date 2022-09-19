@@ -7,6 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { DetalharPageRoutingModule } from './detalhar-routing.module';
 
 import { DetalharPage } from './detalhar.page';
+import { BrMaskerModule } from 'br-mask';
+
+
 
 @NgModule({
   imports: [
@@ -15,6 +18,7 @@ import { DetalharPage } from './detalhar.page';
     IonicModule,
     DetalharPageRoutingModule,
     ReactiveFormsModule,
+    BrMaskerModule,
   ],
   declarations: [DetalharPage]
 })

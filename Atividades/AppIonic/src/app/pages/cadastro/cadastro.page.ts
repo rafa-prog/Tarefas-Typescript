@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { ContatoService } from '../../services/contato.service';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { ContatoFirebaseService } from 'src/app/services/contato.firebase.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -14,9 +14,11 @@ export class CadastroPage implements OnInit {
   formCadastrar: FormGroup
   isSubmitted: boolean = false
 
-  constructor(private alertController: AlertController, 
-    private router: Router, private contatoService: ContatoService,
-    private formBuilder: FormBuilder) { }
+  constructor(private router: Router,
+    private formBuilder: FormBuilder,
+    private loadingCtrl: LoadingController,
+    private alertController: AlertController, 
+    private contatoFs: ContatoFirebaseService,) { }
 
   ngOnInit() {
     this.data = new Date().toISOString()
@@ -33,10 +35,6 @@ export class CadastroPage implements OnInit {
       })
   }
 
-  get errorControl() {
-    return this.formCadastrar.controls
-  }
-
   submitForm(): boolean {
     this.isSubmitted = true
     if(!this.formCadastrar.valid) {
@@ -47,10 +45,33 @@ export class CadastroPage implements OnInit {
     this.cadastrar()
   }
 
+  get errorControl() {
+    return this.formCadastrar.controls
+  }
+
   private cadastrar() {
-    this.contatoService.addContato(this.formCadastrar.value)
-    this.presentAlert("Agenda", "", "Contato cadastrado")
-    this.router.navigate(['/home'])
+    this.showLoading("Aguarde", 10000)
+    this.contatoFs.createContato(this.formCadastrar.value)
+    .then(() => {
+      this.loadingCtrl.dismiss()
+      this.presentAlert("Agenda", "", "Contato cadastrado")
+      this.router.navigate(['/home'])
+    })
+    .catch((err) => {
+      this.loadingCtrl.dismiss()
+      this.presentAlert("Agenda", "Erro", "Erro no cadastro!")
+      console.log(err)
+    })
+  }
+
+  async showLoading(mensagem: string, duracao: number) {
+    const loading = await this.loadingCtrl.create({
+      message: mensagem,
+      duration: duracao,
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
   }
 
   async presentAlert(header: string, subheader: string, message: string) {

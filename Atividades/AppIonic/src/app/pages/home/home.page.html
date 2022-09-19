@@ -8,7 +8,7 @@
 
 <ion-content>
   <!-- List of Text Items -->
-  <ion-list *ngIf="contatos.length > 0">
+  <ion-list>
     <ion-item-sliding *ngFor="let contato of contatos">
         <ion-item>
           <ion-label>{{ contato.nome }}</ion-label>

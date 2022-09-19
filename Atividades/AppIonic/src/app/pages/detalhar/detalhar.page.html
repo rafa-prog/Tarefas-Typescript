@@ -10,33 +10,59 @@
       <ion-label>Habilitar edição</ion-label>
       <ion-toggle color="success" (ionChange)="editar()"></ion-toggle>
     </ion-item>
-    <ion-item>
-      <ion-input disabled="{{ disabled }}" placeholder="nome" [(ngModel)]="nome"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input disabled="{{ disabled }}" placeholder="telefone" type="number" [(ngModel)]="telefone"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-select disabled="{{ disabled }}" placeholder="Selecione o Gênero" [(ngModel)]="genero">
-        <ion-select-option value="masculino">Masculino</ion-select-option>
-        <ion-select-option value="feminino">Feminino</ion-select-option>
-        <ion-select-option value="não declarar">Não declarar</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      Data de nascimento: 
-      <ion-datetime-button disabled="{{ disabled }}" datetime="datetime" ></ion-datetime-button>
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime id="datetime" max="{{ data }}"
-          presentation="date" [(ngModel)]="dataNascimento"></ion-datetime>
-        </ng-template>
-      </ion-modal>
-    </ion-item>
+    
+    <form [formGroup]="formDetalhar" (ngSubmit)="submitForm()">
+      <ion-item disabled="{{ disabled }}">
+        <ion-input placeholder="nome" formControlName="nome"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="((errorControl.nome.touched) ||
+        (errorControl.nome.dirty) && errorControl.nome.errors)">
+        <span *ngIf="errorControl.nome.errors?.required">Nome obrigatório!</span>
+      </ion-item>
+
+      <ion-item disabled="{{ disabled }}">
+        <ion-input placeholder="telefone" formControlName="telefone" [brmasker]="{phone: true}"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="((errorControl.telefone.touched) ||
+        (errorControl.telefone.dirty) && errorControl.telefone.errors)">
+
+        <span *ngIf="errorControl.telefone.errors?.required">Telefone obrigatório!</span>
+        <span *ngIf="errorControl.telefone.errors?.minlength">
+          Telefone precisa ter 10 caracteres!</span>
+
+      </ion-item>
+
+      <ion-item disabled="{{ disabled }}">
+        <ion-select placeholder="Selecione o Gênero" formControlName="genero">
+          <ion-select-option value="masculino">Masculino</ion-select-option>
+          <ion-select-option value="feminino">Feminino</ion-select-option>
+          <ion-select-option value="não declarar">Não declarar</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="((errorControl.genero.touched) ||
+        (errorControl.genero.dirty) && errorControl.genero.errors)">
+        <span *ngIf="errorControl.genero.errors?.required">Gênero obrigatório!</span>
+      </ion-item>
+
+      <ion-item disabled="{{ disabled }}">
+        <ion-datetime-button datetime="datetime" ></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="datetime" max="{{ data }}"
+            presentation="date" formControlName="dataNascimento"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+      <ion-item *ngIf="((errorControl.dataNascimento.touched) ||
+        (errorControl.dataNascimento.dirty) && errorControl.dataNascimento.errors)">
+        <span *ngIf="errorControl.dataNascimento.errors?.required">
+          Data de nascimento obrigatório!</span>
+      </ion-item>
+
+      <ion-button disabled="{{ disabled }}" type="submit" 
+      expand="block" fill="outline">Salvar</ion-button>
+    </form>
   </ion-list>
-  
-  <ion-button disabled="{{ disabled }}" (click)="salvar()" expand="block" 
-  fill="outline">Salvar</ion-button>
 
   <ion-button disabled="{{ disabled }}" (click)="excluir()" expand="block" 
   color="danger" fill="outline">Excluir</ion-button>

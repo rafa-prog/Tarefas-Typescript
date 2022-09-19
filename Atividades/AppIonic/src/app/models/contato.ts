@@ -1,17 +1,19 @@
 export class Contato {
-    private _id: any
+    private _id: string
     private _nome: string
     private _telefone: number
     private _genero: string
     private _dataNascimento: string
 
     constructor(nome: string, telefone: number, genero: string, dataNascimento: string) {
-        let chave = new Date()
-        this._id = chave.getTime()
         this.nome = nome
         this.telefone = telefone
         this._genero = genero
         this._dataNascimento = dataNascimento
+    }
+
+    public get id(): string {
+        return this._id
     }
 
     public get nome(): string {
@@ -45,9 +47,4 @@ export class Contato {
     public set dataNascimento(value: string) {
         this._dataNascimento = value
     }
-
-    public get id(): any {
-        return this._id
-    }
-
 }

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Contato } from 'src/app/models/contato';
+import { ContatoFirebaseService } from 'src/app/services/contato.firebase.service';
 import { ContatoService } from 'src/app/services/contato.service';
 
 @Component({
@@ -11,27 +13,33 @@ import { ContatoService } from 'src/app/services/contato.service';
 })
 export class DetalharPage implements OnInit {
   contato: Contato
-  nome: string
-  telefone: number
-  genero: string
-  dataNascimento: string
+  
+  formDetalhar: FormGroup
+  
   data: string
   disabled: boolean
+  isSubmitted: boolean = false
 
   constructor(private router: Router,
-    private alertController: AlertController,
-    private contatoService: ContatoService) { }
+    private formBuilder: FormBuilder,
+    private loadingCtrl: LoadingController,
+    private contatoFs: ContatoFirebaseService,
+    private alertController: AlertController) { }
 
   ngOnInit() {
-    this.data = new Date().toISOString()
     const nav = this.router.getCurrentNavigation()
     this.contato = nav.extras.state.objeto
     console.log(this.contato)
-    this.nome = this.contato.nome
-    // nome: ['', Validators.required],
-    this.telefone = this.contato.telefone
-    this.genero = this.contato.genero
-    this.dataNascimento = this.contato.dataNascimento
+    this.data = new Date().toISOString()
+
+    this.formDetalhar = this.formBuilder.group(
+      {
+        nome: [this.contato.nome, Validators.required],
+        telefone: [this.contato.telefone, [Validators.required, Validators.minLength(14)]],
+        genero: [this.contato.genero, Validators.required],
+        dataNascimento: [this.contato.dataNascimento, Validators.required],
+      })
+    
     this.disabled = true
   }
 
@@ -40,22 +48,19 @@ export class DetalharPage implements OnInit {
   }
 
   salvar() {
-    this.dataNascimento = this.dataNascimento.split('T')[0]
-    if(this.validar(this.nome) && this.validar(this.telefone)
-    && this.validar(this.genero) && this.validar(this.dataNascimento)) {
-
-      if(this.contatoService.updateContatos(this.contato, this.nome, 
-        this.telefone, this.genero, this.dataNascimento)) {
-
-        this.presentAlert("Agenda", "", "Edição realizada com sucesso")
-        this.router.navigate(['/home'])
-      }else {
-        this.presentAlert("Agenda", "Erro", "Contato não encontrado!")          
-      }
-    } 
-    else{
-      this.presentAlert("Agenda", "Erro", "Todos os campos são obrigatórios!")
-    }
+    this.data = this.data.split('T')[0]
+    this.showLoading("Aguarde", 10000)
+    this.contatoFs.updateContato(this.formDetalhar.value, this.contato.id)
+    .then(() => {
+      this.loadingCtrl.dismiss()
+      this.presentAlert("Agenda", "", "Edição realizada com sucesso")
+      this.router.navigate(['/home'])
+    })
+    .catch((err) => {
+      this.loadingCtrl.dismiss()
+      this.presentAlert("Agenda", "Erro", "Contato não encontrado!")
+      console.log(err) 
+    })
   }
 
   excluir() {
@@ -64,19 +69,39 @@ export class DetalharPage implements OnInit {
   }
 
   private excluirContato() {
-    if(this.contatoService.deleteContato(this.contato)) {
+    this.contatoFs.deleteContato(this.contato)
+    .then(() => {
       this.presentAlert("Agenda", "Excluir", "Exclusão do contato realizada!")
-      this.router.navigate(['/home'])
-    }else {
+      this.router.navigate(['/home']) 
+    })
+    .catch((err) => {
       this.presentAlert("Agenda", "Erro", "Contato não encontrado!")
-    }
+      console.log(err)
+    })
   }
-
-  private validar(campo: any): boolean {
-    if(!campo) {
+  
+  submitForm(): boolean {
+    this.isSubmitted = true
+    if(!this.formDetalhar.valid) {
+      this.presentAlert("Agenda", "Erro", "Todos os campos são obrigatórios!")
       return false
     }
-    return true
+
+    this.salvar()
+  }
+
+  get errorControl() {
+    return this.formDetalhar.controls
+  }
+
+  async showLoading(mensagem: string, duracao: number) {
+    const loading = await this.loadingCtrl.create({
+      message: mensagem,
+      duration: duracao,
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
   }
 
   async presentAlertConfirm(header: string, subheader: string, message: string) {
