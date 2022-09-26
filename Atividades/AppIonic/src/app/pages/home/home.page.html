@@ -11,6 +11,9 @@
   <ion-list>
     <ion-item-sliding *ngFor="let contato of contatos">
         <ion-item>
+          <ion-avatar>
+            <img src="{{ contato.downloadURL }}"/>
+          </ion-avatar>
           <ion-label>{{ contato.nome }}</ion-label>
         </ion-item>
           <ion-item-options>

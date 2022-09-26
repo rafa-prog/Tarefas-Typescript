@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Contato } from 'src/app/models/contato';
 import { ContatoFirebaseService } from 'src/app/services/contato.firebase.service';
-import { ContatoService } from 'src/app/services/contato.service';
 
 @Component({
   selector: 'app-detalhar',
@@ -38,6 +37,7 @@ export class DetalharPage implements OnInit {
         telefone: [this.contato.telefone, [Validators.required, Validators.minLength(14)]],
         genero: [this.contato.genero, Validators.required],
         dataNascimento: [this.contato.dataNascimento, Validators.required],
+        imagem: [this.contato.downloadURL, [Validators.required]]
       })
     
     this.disabled = true

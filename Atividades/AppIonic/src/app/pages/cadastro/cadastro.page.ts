@@ -11,6 +11,7 @@ import { ContatoFirebaseService } from 'src/app/services/contato.firebase.servic
 })
 export class CadastroPage implements OnInit {
   data: string
+  imagem: any
   formCadastrar: FormGroup
   isSubmitted: boolean = false
 
@@ -28,10 +29,11 @@ export class CadastroPage implements OnInit {
   formInit() {
     this.formCadastrar = this.formBuilder.group(
       {
-        nome: ['', Validators.required],
+        nome: ['', [Validators.required]],
         telefone: ['', [Validators.required, Validators.minLength(14)]],
         genero: ['', Validators.required],
-        dataNascimento: ['', Validators.required],
+        dataNascimento: ['', [Validators.required]],
+        imagem: ['', [Validators.required]]
       })
   }
 
@@ -49,9 +51,13 @@ export class CadastroPage implements OnInit {
     return this.formCadastrar.controls
   }
 
+  uploadFile(imagem: any) {
+    this.imagem = imagem.files
+  }
+
   private cadastrar() {
     this.showLoading("Aguarde", 10000)
-    this.contatoFs.createContato(this.formCadastrar.value)
+    this.contatoFs.enviarImg(this.imagem, this.formCadastrar.value)
     .then(() => {
       this.loadingCtrl.dismiss()
       this.presentAlert("Agenda", "", "Contato cadastrado")
