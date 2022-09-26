@@ -38,7 +38,7 @@
 
     <ion-item>
       <ion-label position="floating">quantidade do produto*</ion-label>
-      <ion-input type="number" formControlName="quantidade"></ion-input>
+      <ion-input type="object" formControlName="quantidade"></ion-input>
       <div *ngIf="((errorControl.quantidade.touched) ||
       (errorControl.quantidade.dirty) && errorControl.quantidade.errors)">
         <span *ngIf="errorControl.quantidade.errors?.required">Quantidade obrigatória!</span>

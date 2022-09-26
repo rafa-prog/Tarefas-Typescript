@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -30,7 +31,17 @@ export class DetalhesProdutoPage implements OnInit {
   private loadingCtrl: LoadingController,
   private alertController: AlertController,
   private produtoFs: ProdutoFirebaseService,
-  private provedorFs: ProvedorFirebaseService) { }
+  private provedorFs: ProvedorFirebaseService) {
+    this.provedorFs.readProvedores()
+    .subscribe(res => {
+      this.provedores =  res.map(c => ({
+          id: c.payload.doc.id,
+          ...c.payload.doc.data() as Provedor
+        } as Provedor));
+    });
+
+    console.log(this.provedores);
+  }
 
   reuploadFile(imagem: any) {
     this.imagem = imagem.files;
@@ -38,21 +49,12 @@ export class DetalhesProdutoPage implements OnInit {
 
   ngOnInit() {
     const nav = this.router.getCurrentNavigation();
-    this.produto = nav.extras.state.objeto;
+    this.produto = nav.extras.state.objProd;
     this.data = new Date().toISOString();
 
-    this.provedorFs.readProvedores()
-    .subscribe(res => {
-      this.provedores = res.map(c => ({
-          id: c.payload.doc.id,
-          ...c.payload.doc.data() as Provedor
-        } as Provedor));
-    });
-    
-    console.log(this.produto)
-    console.log(this.provedores)
+    console.log(this.produto);
 
-    this.disabled = true
+    this.disabled = true;
     this.formInit();
   }
 
@@ -60,7 +62,7 @@ export class DetalhesProdutoPage implements OnInit {
     this.formDetProd = this.formBuilder.group(
       {
         nome: [this.produto.nome, [Validators.required, Validators.minLength(4)]],
-        provedor: [this.produto.provedor, [Validators.required]],
+        provedor: ['', [Validators.required]],
         info: [this.produto.info, [Validators.required]],
         quantidade: [this.produto.quantidade, [Validators.required, Validators.min(1)]],
         preco: [this.produto.preco, [Validators.required, Validators.min(0.1)]],

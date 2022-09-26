@@ -19,12 +19,21 @@ export class HomePage {
   constructor(private router: Router,
   private provedorFs: ProvedorFirebaseService,
   private produtoFs: ProdutoFirebaseService) {
+
     this.provedorFs.readProvedores()
     .subscribe(res => {
-      this.provedores = res.map(c => ({
+      this.provedores =  res.map(c => ({
           id: c.payload.doc.id,
           ...c.payload.doc.data() as Provedor
         } as Provedor));
+    });
+
+    this.produtoFs.readProdutos()
+    .subscribe(res => {
+      this.produtos = res.map(c => ({
+          id: c.payload.doc.id,
+          ...c.payload.doc.data() as Produto
+        } as Produto));
     });
   }
 
@@ -38,6 +47,6 @@ export class HomePage {
 
   detalhesProduto(produto: Produto) {
     this.router.navigateByUrl('/detalhes-produto',
-    {state: {objeto:produto}});
+    {state: {objProd:produto}});
   }
 }

@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
+  <ion-list *ngIf="provedores !== undefined">
     <ion-item-sliding *ngFor="let provedor of provedores">
         <ion-item>
           <ion-label>{{ provedor.nome }}</ion-label>

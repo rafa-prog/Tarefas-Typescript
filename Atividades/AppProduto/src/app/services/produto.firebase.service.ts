@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { where } from 'firebase/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Produto } from '../models/produto';
 import { finalize } from 'rxjs/operators';
@@ -9,20 +10,18 @@ import { Provedor } from '../models/provedor';
   providedIn: 'root'
 })
 export class ProdutoFirebaseService {
-  private provedorId = ''
-  private path =`provedores/${this.provedorId}/produtos`;
+  private path ='produtos';
 
   constructor(
     private afs: AngularFirestore,
     private aFStorage: AngularFireStorage,) { }
 
   createProduto(produto: Produto) {
-    console.log(produto.provedor.id)
     return this.afs
-    .collection(`provedores/${produto.provedor.id}/produtos`)
+    .collection(this.path)
     .add({
       nome: produto.nome,
-      provedor: produto.provedor,
+      provedor: `provedores/${produto.id}`,
       info: produto.info,
       quantidade: produto.quantidade,
       preco: produto.preco,
@@ -32,15 +31,13 @@ export class ProdutoFirebaseService {
     });
   }
 
-  readProdutos(provedor: Provedor) {
-    this.provedorId = provedor.id
+  readProdutos() {
     return this.afs
     .collection(this.path)
     .snapshotChanges();
   }
 
-  readProduto(provedor: Provedor, id: string) {
-    this.provedorId = provedor.id
+  readProduto(id: string) {
     return this.afs
     .collection(this.path)
     .doc(id)
@@ -48,7 +45,6 @@ export class ProdutoFirebaseService {
   }
 
   updateProduto(produto: Produto, id: string) {
-    this.provedorId = produto.provedor.id
     return this.afs
     .collection(this.path)
     .doc(id)
@@ -65,7 +61,6 @@ export class ProdutoFirebaseService {
   }
 
   deleteProduto(produto: Produto) {
-    this.provedorId = produto.provedor.id
     return this.afs
     .collection(this.path)
     .doc(produto.id)
@@ -73,11 +68,10 @@ export class ProdutoFirebaseService {
   }
 
   deleteByProvedor(provedor: Provedor) {
-    this.provedorId = provedor.id
+    //
   }
 
   enviarImg(img: any, produto: Produto) {
-    this.provedorId = produto.provedor.id
     const file = img.item(0);
     if(file.type.split('/')[0] !== 'image') {
       console.error('Tipo não suportado!');
@@ -95,6 +89,7 @@ export class ProdutoFirebaseService {
       uploadedFileURL.subscribe((res) => {
         produto.downloadURL = res;
         this.createProduto(produto);
+        console.log(produto.provedor.id);
       });
     }))
     .subscribe();
@@ -102,9 +97,7 @@ export class ProdutoFirebaseService {
   }
 
   updateImg(img: any, produto: Produto) {
-    this.provedorId = produto.provedor.id
-
-    const updateImgRef = this.aFStorage.refFromURL(produto.downloadURL).delete()
+    const updateImgRef = this.aFStorage.refFromURL(produto.downloadURL).delete();
 
     const file = img.item(0);
     if(file.type.split('/')[0] !== 'image') {

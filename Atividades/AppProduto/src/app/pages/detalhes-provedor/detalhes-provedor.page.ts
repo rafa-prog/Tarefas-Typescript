@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Provedor } from 'src/app/models/provedor';
+import { ProdutoFirebaseService } from 'src/app/services/produto.firebase.service';
 import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
 
 @Component({
@@ -27,6 +28,7 @@ export class DetalhesProvedorPage implements OnInit {
   private formBuilder: FormBuilder,
   private loadingCtrl: LoadingController,
   private alertController: AlertController,
+  private produtoFs: ProdutoFirebaseService,
   private provedorFs: ProvedorFirebaseService) { }
 
   get errorControl() {
@@ -39,7 +41,7 @@ export class DetalhesProvedorPage implements OnInit {
     this.data = new Date().toISOString();
 
     this.disabled = true;
-    this.formInit()
+    this.formInit();
   }
 
   formInit() {
@@ -90,7 +92,8 @@ export class DetalhesProvedorPage implements OnInit {
     });
   }
 
-  private excluirProduto() {
+  private excluirProvedor() {
+    this.produtoFs.deleteByProvedor(this.provedor);
     this.provedorFs.deleteProvedor(this.provedor)
     .then(() => {
       this.presentAlert('Agenda', 'Excluir', 'Exclusão do contato realizada!');
@@ -138,7 +141,7 @@ export class DetalhesProvedorPage implements OnInit {
           text: 'OK',
           role: 'confirm',
           handler: () => {
-            this.excluirProduto();
+            this.excluirProvedor();
           },
         },
       ],
