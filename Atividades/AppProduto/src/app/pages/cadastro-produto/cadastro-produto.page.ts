@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Provedor } from 'src/app/models/provedor';
-import { ProdutoService } from 'src/app/services/produto.service';
-import { ProvedorService } from 'src/app/services/provedor.service';
+import { ProdutoFirebaseService } from 'src/app/services/produto.firebase.service';
+import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
+
 
 @Component({
   selector: 'app-cadastro-produto',
@@ -12,22 +14,36 @@ import { ProvedorService } from 'src/app/services/provedor.service';
   styleUrls: ['./cadastro-produto.page.scss'],
 })
 export class CadastroProdutoPage implements OnInit {
-  isSubmitted: boolean = false
-  formCadProd: FormGroup
-  
-  provedores: Provedor[]
-  data: string
-  
+  isSubmitted = false;
+  formCadProd: FormGroup;
+
+  provedores: Provedor[];
+  imagem: any;
+  data: string;
+
   constructor(private router: Router,
   private formBuilder: FormBuilder,
+  private loadingCtrl: LoadingController,
   private alertController: AlertController,
-  private provedorService: ProvedorService,
-  private produtoService: ProdutoService) { }
+  private provedorFs: ProvedorFirebaseService,
+  private produtoFs: ProdutoFirebaseService) { }
+
+  get errorControl() {
+    return this.formCadProd.controls;
+  }
 
   ngOnInit() {
-    this.data = new Date().toISOString()
-    this.provedores = this.provedorService.readProvedor()
-    this.formInit()
+    this.data = new Date().toISOString();
+
+    this.provedorFs.readProvedores()
+    .subscribe(res => {
+      this.provedores = res.map(c => ({
+          id: c.payload.doc.id,
+          ...c.payload.doc.data() as Provedor
+        } as Provedor));
+    });
+
+    this.formInit();
   }
 
   formInit() {
@@ -40,39 +56,57 @@ export class CadastroProdutoPage implements OnInit {
         preco: ['', [Validators.required, Validators.min(0.1)]],
         retornoProvedor: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
         dataCompra: ['', [Validators.required]],
-      })
-  }
-
-  get errorControl() {
-    return this.formCadProd.controls
+        imagem: ['', [Validators.required]],
+      });
   }
 
   submitForm(): boolean {
-    this.isSubmitted = true
+    this.isSubmitted = true;
     if(!this.formCadProd.valid) {
-      this.presentAlert("Cadastro", "Erro", "Todos os campos são obrigatórios!")
-      return false
+      this.presentAlert('Cadastro', 'Erro', 'Todos os campos são obrigatórios!');
+      return false;
     }
 
-    this.cadastrar()
+    this.cadastrar();
   }
 
-  async presentAlert(header: string, subheader: string, message: string) {
+  async presentAlert(titulo: string, subtitulo: string, texto: string) {
     const alert = await this.alertController.create({
-      header: header,
-      subHeader: subheader,
-      message: message,
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
       buttons: ['OK'],
     });
 
     await alert.present();
-  } 
-
-  cadastrar() {
-    this.produtoService.createProduto(this.formCadProd.value)
-    this.presentAlert("Cadastro", "", "Produto registrado!")
-    console.log(this.produtoService.readProdutos())
-    this.router.navigate(['/home'])
   }
 
+  uploadFile(imagem: any) {
+    this.imagem = imagem.files;
+  }
+
+  private cadastrar() {
+    this.showLoading('Aguarde', 10000);
+    this.produtoFs.enviarImg(this.imagem, this.formCadProd.value)
+    .then(() => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Agenda', '', 'Contato cadastrado');
+      this.router.navigate(['/produtos']);
+    })
+    .catch((err) => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Agenda', 'Erro', 'Erro no cadastro!');
+      console.log(err);
+    });
+  }
+
+  async showLoading(mensagem: string, duracao: number) {
+    const loading = await this.loadingCtrl.create({
+      message: mensagem,
+      duration: duracao,
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
+  }
 }

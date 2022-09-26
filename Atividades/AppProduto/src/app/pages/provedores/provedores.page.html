@@ -7,13 +7,18 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div *ngIf="provedores.length > 0">
-    <ion-list>
-      <ion-item *ngFor="let provedor of provedores" (click)="detalhesProvedor(provedor)">
-        <ion-label>{{ provedor.nome }}</ion-label>
-      </ion-item>
-    </ion-list>
-  </div>
+  <ion-list>
+    <ion-item-sliding *ngFor="let provedor of provedores">
+        <ion-item>
+          <ion-label>{{ provedor.nome }}</ion-label>
+        </ion-item>
+          <ion-item-options>
+            <ion-item-option (click)="detalhesProvedor(provedor)">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 
   <ion-button (click)="irParaProdutos()" expand="block">Produtos</ion-button>
 
@@ -22,5 +27,5 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  
+
 </ion-content>

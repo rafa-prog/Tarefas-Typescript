@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Produto } from 'src/app/models/produto';
 import { Provedor } from 'src/app/models/provedor';
-import { ProdutoService } from 'src/app/services/produto.service';
-import { ProvedorService } from 'src/app/services/provedor.service';
+import { ProdutoFirebaseService } from 'src/app/services/produto.firebase.service';
+import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
+
 
 @Component({
   selector: 'app-detalhes-produto',
@@ -13,31 +14,41 @@ import { ProvedorService } from 'src/app/services/provedor.service';
   styleUrls: ['./detalhes-produto.page.scss'],
 })
 export class DetalhesProdutoPage implements OnInit {
-  disabled: boolean = true
-  
-  formDetProd: FormGroup
-  produto: Produto
-  id: string
+  disabled = true;
 
-  provedores: Provedor[]
-  data: string
-  
-  isSubmitted: boolean = false
+  formDetProd: FormGroup;
+  produto: Produto;
+  id: string;
+
+  provedores: Provedor[];
+  data: string;
+
+  isSubmitted = false;
 
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private alertController: AlertController,
-    private produtoService: ProdutoService,
-    private provedorService: ProvedorService) { }
+  private formBuilder: FormBuilder,
+  private alertController: AlertController,
+  private produtoFs: ProdutoFirebaseService,
+  private provedorFs: ProvedorFirebaseService) { }
+
+  get errorControl() {
+    return this.formDetProd.controls;
+  }
 
   ngOnInit() {
-    this.data = new Date().toISOString()
-    this.provedores = this.provedorService.readProvedor()
+    this.data = new Date().toISOString();
+    const nav = this.router.getCurrentNavigation();
+    this.produto = nav.extras.state.objeto;
 
-    const nav = this.router.getCurrentNavigation()
-    this.produto = nav.extras.state.objeto
-    this.id = this.produto.id
-    this.formInit()
+    this.provedorFs.readProvedores()
+    .subscribe(res => {
+      this.provedores = res.map(c => ({
+          id: c.payload.doc.id,
+          ...c.payload.doc.data() as Provedor
+        } as Provedor));
+    });
+
+    this.formInit();
   }
 
   formInit() {
@@ -50,50 +61,44 @@ export class DetalhesProdutoPage implements OnInit {
         preco: [this.produto.quantidade, [Validators.required, Validators.min(0.1)]],
         retornoProvedor: [this.produto.retornoProvedor, [Validators.required, Validators.min(0), Validators.max(100)]],
         dataCompra: [this.produto.dataCompra, [Validators.required]],
-      })
-  }
-
-  get errorControl() {
-    return this.formDetProd.controls
+      });
   }
 
   submitForm(): boolean {
-    this.isSubmitted = true
+    this.isSubmitted = true;
     if(!this.formDetProd.valid) {
-      this.presentAlert("Editar", "Erro", "Todos os campos são obrigatórios!")
-      return false
+      this.presentAlert('Editar', 'Erro', 'Todos os campos são obrigatórios!');
+      return false;
     }
 
-    this.update()
+    this.update();
   }
 
-  async presentAlert(header: string, subheader: string, message: string) {
+  async presentAlert(titulo: string, subtitulo: string, texto: string) {
     const alert = await this.alertController.create({
-      header: header,
-      subHeader: subheader,
-      message: message,
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
       buttons: ['OK'],
     });
 
     await alert.present();
-  } 
+  }
 
   editar() {
-    this.disabled = !this.disabled
+    this.disabled = !this.disabled;
   }
 
   update() {
-    this.produtoService.updateProduto(this.id, this.formDetProd.value)
-    this.presentAlert("Editar", "", "Produto alterado!")
-    console.log(this.produtoService.readProdutos())
-    this.router.navigate(['/home'])
+    this.produtoFs.updateProduto(this.formDetProd.value, this.id);
+    this.presentAlert('Editar', '', 'Produto alterado!');
+    this.router.navigate(['/home']);
   }
 
   delete() {
-    this.produtoService.deleteProduto(this.id)
-    this.presentAlert("Excluir", "", "Produto excluído!")
-    console.log(this.produtoService.readProdutos())
-    this.router.navigate(['/home'])
+    this.produtoFs.deleteProduto(this.produto);
+    this.presentAlert('Excluir', '', 'Produto excluído!');
+    this.router.navigate(['/home']);
   }
 
 }

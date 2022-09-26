@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Provedor } from 'src/app/models/provedor';
-import { ProdutoService } from 'src/app/services/produto.service';
-import { ProvedorService } from 'src/app/services/provedor.service';
+import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
 
 @Component({
   selector: 'app-detalhes-provedor',
@@ -13,84 +13,135 @@ import { ProvedorService } from 'src/app/services/provedor.service';
 })
 
 export class DetalhesProvedorPage implements OnInit {
-  disabled: boolean = true
-  
-  formDetProv: FormGroup
-  provedor: Provedor
-  id: string
+  disabled = true;
 
-  data: string
+  formDetProv: FormGroup;
+  provedor: Provedor;
+  id: string;
 
-  isSubmitted: boolean = false
+  data: string;
+
+  isSubmitted = false;
 
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private alertController: AlertController,
-    private produtoService: ProdutoService,
-    private provedorService: ProvedorService) { }
+  private formBuilder: FormBuilder,
+  private loadingCtrl: LoadingController,
+  private alertController: AlertController,
+  private provedorFs: ProvedorFirebaseService) { }
 
-  ngOnInit() {
-    this.data = new Date().toISOString()
-
-    const nav = this.router.getCurrentNavigation()
-    this.provedor = nav.extras.state.objeto
-    this.id = this.provedor.id
-    this.formInit()
+  get errorControl() {
+    return this.formDetProv.controls;
   }
 
-  formInit() {
+  ngOnInit() {
+    const nav = this.router.getCurrentNavigation();
+    this.provedor = nav.extras.state.objeto;
+    this.data = new Date().toISOString();
+
     this.formDetProv = this.formBuilder.group(
       {
         nome: [this.provedor.nome, [Validators.required, Validators.minLength(4)]],
         titulo: [this.provedor.titulo],
         cnpj: [this.provedor.cnpj, [Validators.required, Validators.minLength(14)]],
-        cep: [this.provedor.cep, [Validators.required, Validators.minLength(8), Validators.minLength(9)]],
+        cep: [this.provedor.cep, [Validators.required, Validators.minLength(8), Validators.maxLength(9)]],
         endereco: [this.provedor.endereco, [Validators.required, Validators.minLength(8)]],
         telefone: [this.provedor.telefone, [Validators.required, Validators.minLength(14)]],
         dataContrato: [this.provedor.dataContrato, [Validators.required]],
-      })
+      });
+
+    this.disabled = true;
   }
 
-  get errorControl() {
-    return this.formDetProv.controls
+  editar() {
+    this.disabled = !this.disabled;
+  }
+
+  salvar() {
+    this.data = this.data.split('T')[0];
+    this.showLoading('Aguarde', 10000);
+    this.provedorFs.updateProvedor(this.formDetProv.value, this.provedor.id)
+    .then(() => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Agenda', '', 'Edição realizada com sucesso');
+      this.router.navigate(['/provedores']);
+    })
+    .catch((err) => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Agenda', 'Erro', 'Contato não encontrado!');
+      console.log(err);
+    });
+  }
+
+  excluir() {
+    this.presentAlertConfirm('Agenda', 'Excluir contato',
+    'Você realmente deseja exlcuir contato?');
+  }
+
+  private excluirContato() {
+    this.provedorFs.deleteProvedor(this.provedor)
+    .then(() => {
+      this.presentAlert('Agenda', 'Excluir', 'Exclusão do contato realizada!');
+      this.router.navigate(['/provedores']);
+    })
+    .catch((err) => {
+      this.presentAlert('Agenda', 'Erro', 'Contato não encontrado!');
+      console.log(err);
+    });
   }
 
   submitForm(): boolean {
-    this.isSubmitted = true
+    this.isSubmitted = true;
     if(!this.formDetProv.valid) {
-      this.presentAlert("Editar", "Erro", "Todos os campos são obrigatórios!")
-      return false
+      this.presentAlert('Agenda', 'Erro', 'Todos os campos são obrigatórios!');
+      return false;
     }
 
-    this.update()
+    this.salvar();
   }
 
-  async presentAlert(header: string, subheader: string, message: string) {
+  async showLoading(mensagem: string, duracao: number) {
+    const loading = await this.loadingCtrl.create({
+      message: mensagem,
+      duration: duracao,
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
+  }
+
+  async presentAlertConfirm(titulo: string, subtitulo: string, texto: string) {
     const alert = await this.alertController.create({
-      header: header,
-      subHeader: subheader,
-      message: message,
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {},
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+          handler: () => {
+            this.excluirContato();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async presentAlert(titulo: string, subtitulo: string, texto: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
       buttons: ['OK'],
     });
 
     await alert.present();
-  } 
-
-  editar() {
-    this.disabled = !this.disabled
-  }
-
-  update() {
-    this.provedorService.updateProvedor(this.id, this.formDetProv.value)
-    this.presentAlert("Editar", "", "Provedor alterado!")
-    this.router.navigate(['/provedores'])
-  }
-
-  delete() {
-    this.produtoService.deleteByProvedor(this.formDetProv.value)
-    this.provedorService.deleteProvedor(this.id)
-    this.presentAlert("Excluir", "", "Provedor e produtos associados excluídos!")
-    this.router.navigate(['/provedores'])
   }
 
 }

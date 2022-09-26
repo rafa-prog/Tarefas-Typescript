@@ -15,12 +15,12 @@
         <span *ngIf="errorControl.nome.errors?.minlength">Nome precisa ser maior!</span>
       </div>
     </ion-item>
-  
+
       <ion-item>
         <ion-label position="floating">título</ion-label>
         <ion-input formControlName="titulo"></ion-input>
       </ion-item>
-  
+
       <ion-item>
         <ion-label position="floating">cnpj*</ion-label>
         <ion-input [brmasker]="{person: true}" formControlName="cnpj"></ion-input>
@@ -30,7 +30,7 @@
           <span *ngIf="errorControl.cnpj.errors?.minlength">CNPJ precisa ser maior!</span>
         </div>
       </ion-item>
-  
+
       <ion-item>
         <ion-label position="floating">cep*</ion-label>
         <ion-input formControlName="cep"></ion-input>
@@ -50,7 +50,7 @@
           <span *ngIf="errorControl.endereco.errors?.minlength">Endereço precisa ser maior!</span>
         </div>
       </ion-item>
-  
+
       <ion-item>
         <ion-label position="floating">telefone*</ion-label>
         <ion-input formControlName="telefone" [brmasker]="{phone: true}"></ion-input>
@@ -60,9 +60,9 @@
           <span *ngIf="errorControl.telefone.errors?.minlength">Telefone precisa ser maior!</span>
         </div>
       </ion-item>
-  
+
       <ion-item>
-        <ion-label position="stacked">data do contrato</ion-label>
+        <ion-label position="stacked">data do contrato*</ion-label>
         <ion-datetime-button datetime="datetime" ></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
@@ -76,7 +76,7 @@
             Data do contrato obrigatória!</span>
         </div>
       </ion-item>
-  
+
       <ion-button type="submit" expand="block" fill="outline">Cadastrar</ion-button>
   </form>
 </ion-content>

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { ProvedorService } from 'src/app/services/provedor.service';
+import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
+
 
 @Component({
   selector: 'app-cadastro-provedor',
@@ -11,19 +12,23 @@ import { ProvedorService } from 'src/app/services/provedor.service';
 })
 
 export class CadastroProvedorPage implements OnInit {
-  isSubmitted: boolean = false
-  formCadProv: FormGroup
-  
-  data: string
+  isSubmitted = false;
+  formCadProv: FormGroup;
+
+  data: string;
 
   constructor(private router: Router,
   private formBuilder: FormBuilder,
   private alertController: AlertController,
-  private provedorService: ProvedorService) { }
+  private provedorFs: ProvedorFirebaseService) { }
+
+  get errorControl() {
+    return this.formCadProv.controls;
+  }
 
   ngOnInit() {
-    this.data = new Date().toISOString()
-    this.formInit()
+    this.data = new Date().toISOString();
+    this.formInit();
   }
 
   formInit() {
@@ -36,38 +41,34 @@ export class CadastroProvedorPage implements OnInit {
         endereco: ['', [Validators.required, Validators.minLength(8)]],
         telefone: ['', [Validators.required, Validators.minLength(14)]],
         dataContrato: ['', [Validators.required]],
-      })
-  }
-
-  get errorControl() {
-    return this.formCadProv.controls
+      });
   }
 
   submitForm(): boolean {
-    this.isSubmitted = true
+    this.isSubmitted = true;
     if(!this.formCadProv.valid) {
-      this.presentAlert("Cadastro", "Erro", "Todos os campos são obrigatórios!")
-      return false
+      this.presentAlert('Cadastro', 'Erro', 'Todos os campos são obrigatórios!');
+      return false;
     }
 
-    this.cadastrar()
+    this.cadastrar();
   }
 
-  async presentAlert(header: string, subheader: string, message: string) {
+  async presentAlert(titulo: string, subtitulo: string, texto: string) {
     const alert = await this.alertController.create({
-      header: header,
-      subHeader: subheader,
-      message: message,
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
       buttons: ['OK'],
     });
 
     await alert.present();
-  } 
+  }
 
   cadastrar() {
-    this.provedorService.createProvedor(this.formCadProv.value)
-    this.presentAlert("Cadastro", "", "Provedor registrado!")
-    this.router.navigate(['/provedores'])
+    this.provedorFs.createProvedor(this.formCadProv.value);
+    this.presentAlert('Cadastro', '', 'Provedor registrado!');
+    this.router.navigate(['/provedores']);
   }
 
 }
