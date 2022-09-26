@@ -19,7 +19,7 @@
     <ion-item>
       <ion-label position="floating">provedor*</ion-label>
       <ion-select formControlName="provedor">
-        <ion-select-option *ngFor="let provedor of provedores">{{ provedor.nome }}</ion-select-option>
+        <ion-select-option *ngFor="let provedor of provedores" value="{{ provedor }}">{{ provedor.nome }}</ion-select-option>
       </ion-select>
       <div *ngIf="((errorControl.provedor.touched) ||
       (errorControl.provedor.dirty) && errorControl.provedor.errors)">

@@ -17,7 +17,7 @@
 
   <form [formGroup]="formDetProd" (ngSubmit)="submitForm()">
     <ion-item disabled="{{ disabled }}">
-      <ion-label position="floating">nome</ion-label>
+      <ion-label position="floating">nome*</ion-label>
       <ion-input formControlName="nome"></ion-input>
       <div *ngIf="((errorControl.nome.touched) ||
       (errorControl.nome.dirty) && errorControl.nome.errors)">
@@ -27,9 +27,9 @@
     </ion-item>
 
     <ion-item disabled="{{ disabled }}">
-      <ion-label position="floating">provedor</ion-label>
+      <ion-label position="floating">provedor*</ion-label>
       <ion-select formControlName="provedor">
-        <ion-select-option *ngFor="let provedor of provedores">{{ provedor.nome }}</ion-select-option>
+        <ion-select-option *ngFor="let provedor of provedores" value="{{ provedor }}">{{ provedor.nome }}</ion-select-option>
       </ion-select>
       <div *ngIf="((errorControl.provedor.touched) ||
       (errorControl.provedor.dirty) && errorControl.provedor.errors)">
@@ -38,7 +38,7 @@
     </ion-item>
 
     <ion-item disabled="{{ disabled }}">
-      <ion-label position="floating">descrição</ion-label>
+      <ion-label position="floating">descrição*</ion-label>
       <ion-textarea formControlName="info"></ion-textarea>
       <div *ngIf="((errorControl.info.touched) ||
       (errorControl.info.dirty) && errorControl.info.errors)">
@@ -47,7 +47,7 @@
     </ion-item>
 
     <ion-item disabled="{{ disabled }}">
-      <ion-label position="floating">quantidade do produto</ion-label>
+      <ion-label position="floating">quantidade do produto*</ion-label>
       <ion-input type="number" formControlName="quantidade"></ion-input>
       <div *ngIf="((errorControl.quantidade.touched) ||
       (errorControl.quantidade.dirty) && errorControl.quantidade.errors)">
@@ -57,7 +57,7 @@
     </ion-item>
 
     <ion-item disabled="{{ disabled }}">
-      <ion-label position="floating">preço p/ unidade</ion-label>
+      <ion-label position="floating">preço p/ unidade*</ion-label>
       <ion-input type="number" formControlName="preco"></ion-input>
       <div *ngIf="((errorControl.preco.touched) ||
       (errorControl.preco.dirty) && errorControl.preco.errors)">
@@ -67,7 +67,7 @@
     </ion-item>
 
     <ion-item disabled="{{ disabled }}">
-      <ion-label position="floating">retorno p/ unidade para o provedor</ion-label>
+      <ion-label position="floating">retorno p/ unidade para o provedor*</ion-label>
       <ion-input type="number" class="num_percent" formControlName="retornoProvedor"></ion-input>
       <div *ngIf="((errorControl.retornoProvedor.touched) ||
       (errorControl.retornoProvedor.dirty) && errorControl.retornoProvedor.errors)">
@@ -78,7 +78,7 @@
     </ion-item>
 
     <ion-item disabled="{{ disabled }}"> 
-      <ion-label position="stacked">data da compra</ion-label>
+      <ion-label position="stacked">data da compra*</ion-label>
       <ion-datetime-button datetime="datetime" ></ion-datetime-button>
       <ion-modal [keepContentsMounted]="true">
         <ng-template>
@@ -93,10 +93,20 @@
       </div>
     </ion-item>
 
+    <ion-item>
+      <img src="{{ produto.downloadURL }}" alt=""/>
+    </ion-item>
+
+    <ion-item disabled="{{ disabled }}">
+      <ion-button size="default" color="sucess" shape="round">
+        <input type="file" formControlName=imagem (change)="reuploadFile($event.target)"/>
+      </ion-button>
+    </ion-item>
+
     <ion-button disabled="{{ disabled }}"  type="submit" 
     expand="block" fill="outline">Editar</ion-button>
   </form>
 
-  <ion-button disabled="{{ disabled }}" color="danger" (click)="delete()"
+  <ion-button disabled="{{ disabled }}" color="danger" (click)="excluir()"
     expand="block" fill="outline">Excluir</ion-button>
 </ion-content>

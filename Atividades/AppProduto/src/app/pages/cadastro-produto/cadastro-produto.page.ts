@@ -28,10 +28,6 @@ export class CadastroProdutoPage implements OnInit {
   private provedorFs: ProvedorFirebaseService,
   private produtoFs: ProdutoFirebaseService) { }
 
-  get errorControl() {
-    return this.formCadProd.controls;
-  }
-
   ngOnInit() {
     this.data = new Date().toISOString();
 
@@ -60,6 +56,10 @@ export class CadastroProdutoPage implements OnInit {
       });
   }
 
+  get errorControl() {
+    return this.formCadProd.controls;
+  }
+
   submitForm(): boolean {
     this.isSubmitted = true;
     if(!this.formCadProd.valid) {
@@ -68,17 +68,6 @@ export class CadastroProdutoPage implements OnInit {
     }
 
     this.cadastrar();
-  }
-
-  async presentAlert(titulo: string, subtitulo: string, texto: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      subHeader: subtitulo,
-      message: texto,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
   }
 
   uploadFile(imagem: any) {
@@ -90,12 +79,12 @@ export class CadastroProdutoPage implements OnInit {
     this.produtoFs.enviarImg(this.imagem, this.formCadProd.value)
     .then(() => {
       this.loadingCtrl.dismiss();
-      this.presentAlert('Agenda', '', 'Contato cadastrado');
+      this.presentAlert('Produto', 'Cadastro', 'Produto cadastrado!');
       this.router.navigate(['/produtos']);
     })
     .catch((err) => {
       this.loadingCtrl.dismiss();
-      this.presentAlert('Agenda', 'Erro', 'Erro no cadastro!');
+      this.presentAlert('Produto', 'Erro', 'Erro no cadastro!');
       console.log(err);
     });
   }
@@ -108,5 +97,16 @@ export class CadastroProdutoPage implements OnInit {
     });
 
     loading.present();
+  }
+
+  async presentAlert(titulo: string, subtitulo: string, texto: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
   }
 }

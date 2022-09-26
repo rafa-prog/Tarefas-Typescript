@@ -73,7 +73,7 @@
       </ion-item>
   
       <ion-item disabled="{{ disabled }}">
-        <ion-label position="stacked">data do contrato</ion-label>
+        <ion-label position="stacked">data do contrato*</ion-label>
         <ion-datetime-button datetime="datetime" ></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
@@ -91,7 +91,7 @@
       <ion-button disabled="{{ disabled }}" type="submit" expand="block" 
       fill="outline">Editar</ion-button>
 
-      <ion-button disabled="{{ disabled }}" color="danger" (click)="delete()"
+      <ion-button disabled="{{ disabled }}" color="danger" (click)="excluir()"
       expand="block" fill="outline">Excluir</ion-button>
 
   </form>

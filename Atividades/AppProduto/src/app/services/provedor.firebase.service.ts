@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Provedor } from '../models/provedor';
 
 @Injectable({
@@ -9,9 +8,7 @@ import { Provedor } from '../models/provedor';
 export class ProvedorFirebaseService {
   private path = 'provedores';
 
-  constructor(
-    private afs: AngularFirestore,
-    private aFStorage: AngularFireStorage,) { }
+  constructor(private afs: AngularFirestore) { }
 
   createProvedor(provedor: Provedor) {
     return this.afs

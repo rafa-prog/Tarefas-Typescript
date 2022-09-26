@@ -38,6 +38,11 @@ export class DetalhesProvedorPage implements OnInit {
     this.provedor = nav.extras.state.objeto;
     this.data = new Date().toISOString();
 
+    this.disabled = true;
+    this.formInit()
+  }
+
+  formInit() {
     this.formDetProv = this.formBuilder.group(
       {
         nome: [this.provedor.nome, [Validators.required, Validators.minLength(4)]],
@@ -48,12 +53,25 @@ export class DetalhesProvedorPage implements OnInit {
         telefone: [this.provedor.telefone, [Validators.required, Validators.minLength(14)]],
         dataContrato: [this.provedor.dataContrato, [Validators.required]],
       });
+  }
 
-    this.disabled = true;
+  submitForm(): boolean {
+    this.isSubmitted = true;
+    if(!this.formDetProv.valid) {
+      this.presentAlert('Agenda', 'Erro', 'Todos os campos são obrigatórios!');
+      return false;
+    }
+
+    this.salvar();
   }
 
   editar() {
     this.disabled = !this.disabled;
+  }
+
+  excluir() {
+    this.presentAlertConfirm('Agenda', 'Excluir contato',
+    'Você realmente deseja exlcuir contato?');
   }
 
   salvar() {
@@ -72,12 +90,7 @@ export class DetalhesProvedorPage implements OnInit {
     });
   }
 
-  excluir() {
-    this.presentAlertConfirm('Agenda', 'Excluir contato',
-    'Você realmente deseja exlcuir contato?');
-  }
-
-  private excluirContato() {
+  private excluirProduto() {
     this.provedorFs.deleteProvedor(this.provedor)
     .then(() => {
       this.presentAlert('Agenda', 'Excluir', 'Exclusão do contato realizada!');
@@ -89,16 +102,6 @@ export class DetalhesProvedorPage implements OnInit {
     });
   }
 
-  submitForm(): boolean {
-    this.isSubmitted = true;
-    if(!this.formDetProv.valid) {
-      this.presentAlert('Agenda', 'Erro', 'Todos os campos são obrigatórios!');
-      return false;
-    }
-
-    this.salvar();
-  }
-
   async showLoading(mensagem: string, duracao: number) {
     const loading = await this.loadingCtrl.create({
       message: mensagem,
@@ -107,6 +110,17 @@ export class DetalhesProvedorPage implements OnInit {
     });
 
     loading.present();
+  }
+
+  async presentAlert(titulo: string, subtitulo: string, texto: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
   }
 
   async presentAlertConfirm(titulo: string, subtitulo: string, texto: string) {
@@ -124,7 +138,7 @@ export class DetalhesProvedorPage implements OnInit {
           text: 'OK',
           role: 'confirm',
           handler: () => {
-            this.excluirContato();
+            this.excluirProduto();
           },
         },
       ],
@@ -132,16 +146,4 @@ export class DetalhesProvedorPage implements OnInit {
 
     await alert.present();
   }
-
-  async presentAlert(titulo: string, subtitulo: string, texto: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      subHeader: subtitulo,
-      message: texto,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
 }

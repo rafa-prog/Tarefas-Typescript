@@ -19,14 +19,6 @@ export class HomePage {
   constructor(private router: Router,
   private provedorFs: ProvedorFirebaseService,
   private produtoFs: ProdutoFirebaseService) {
-    this.produtoFs.readProdutos()
-    .subscribe(res => {
-      this.produtos = res.map(c => ({
-          id: c.payload.doc.id,
-          ...c.payload.doc.data() as Produto
-        } as Produto));
-    });
-
     this.provedorFs.readProvedores()
     .subscribe(res => {
       this.provedores = res.map(c => ({

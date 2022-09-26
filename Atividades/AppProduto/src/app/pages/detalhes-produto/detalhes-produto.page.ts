@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Produto } from 'src/app/models/produto';
 import { Provedor } from 'src/app/models/provedor';
 import { ProdutoFirebaseService } from 'src/app/services/produto.firebase.service';
@@ -18,27 +18,28 @@ export class DetalhesProdutoPage implements OnInit {
 
   formDetProd: FormGroup;
   produto: Produto;
-  id: string;
 
   provedores: Provedor[];
+  imagem: any;
   data: string;
 
   isSubmitted = false;
 
   constructor(private router: Router,
   private formBuilder: FormBuilder,
+  private loadingCtrl: LoadingController,
   private alertController: AlertController,
   private produtoFs: ProdutoFirebaseService,
   private provedorFs: ProvedorFirebaseService) { }
 
-  get errorControl() {
-    return this.formDetProd.controls;
+  reuploadFile(imagem: any) {
+    this.imagem = imagem.files;
   }
 
   ngOnInit() {
-    this.data = new Date().toISOString();
     const nav = this.router.getCurrentNavigation();
     this.produto = nav.extras.state.objeto;
+    this.data = new Date().toISOString();
 
     this.provedorFs.readProvedores()
     .subscribe(res => {
@@ -47,7 +48,11 @@ export class DetalhesProdutoPage implements OnInit {
           ...c.payload.doc.data() as Provedor
         } as Provedor));
     });
+    
+    console.log(this.produto)
+    console.log(this.provedores)
 
+    this.disabled = true
     this.formInit();
   }
 
@@ -58,20 +63,75 @@ export class DetalhesProdutoPage implements OnInit {
         provedor: [this.produto.provedor, [Validators.required]],
         info: [this.produto.info, [Validators.required]],
         quantidade: [this.produto.quantidade, [Validators.required, Validators.min(1)]],
-        preco: [this.produto.quantidade, [Validators.required, Validators.min(0.1)]],
+        preco: [this.produto.preco, [Validators.required, Validators.min(0.1)]],
         retornoProvedor: [this.produto.retornoProvedor, [Validators.required, Validators.min(0), Validators.max(100)]],
         dataCompra: [this.produto.dataCompra, [Validators.required]],
+        imagem: [this.produto.downloadURL, [Validators.required]],
       });
+  }
+
+  editar() {
+    this.disabled = !this.disabled;
+  }
+
+  excluir() {
+    this.presentAlertConfirm('Detalhes', 'Excluir',
+    'Você realmente deseja exlcuir o produto?');
+  }
+
+  get errorControl() {
+    return this.formDetProd.controls;
   }
 
   submitForm(): boolean {
     this.isSubmitted = true;
     if(!this.formDetProd.valid) {
-      this.presentAlert('Editar', 'Erro', 'Todos os campos são obrigatórios!');
+      this.presentAlert('Detalhes', 'Erro', 'Todos os campos são obrigatórios!');
       return false;
     }
 
-    this.update();
+    this.salvar();
+  }
+
+  uploadFile(imagem: any) {
+    this.imagem = imagem.files;
+  }
+
+  private salvar() {
+    this.showLoading('Aguarde', 10000);
+    this.produtoFs.updateImg(this.imagem, this.formDetProd.value)
+    .then(() => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Detalhes', 'Atualizar', 'Produto atualizado');
+      this.router.navigate(['/produtos']);
+    })
+    .catch((err) => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Detalhes', 'Erro', 'Erro ao atualizar!');
+      console.log(err);
+    });
+  }
+
+  private excluirProduto() {
+    this.produtoFs.deleteProduto(this.produto)
+    .then(() => {
+      this.presentAlert('Detalhes', 'Excluir', 'Exclusão do produto realizada!');
+      this.router.navigate(['/provedores']);
+    })
+    .catch((err) => {
+      this.presentAlert('Detalhes', 'Erro', 'Produto não encontrado!');
+      console.log(err);
+    });
+  }
+
+  async showLoading(mensagem: string, duracao: number) {
+    const loading = await this.loadingCtrl.create({
+      message: mensagem,
+      duration: duracao,
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
   }
 
   async presentAlert(titulo: string, subtitulo: string, texto: string) {
@@ -85,20 +145,27 @@ export class DetalhesProdutoPage implements OnInit {
     await alert.present();
   }
 
-  editar() {
-    this.disabled = !this.disabled;
-  }
+  async presentAlertConfirm(titulo: string, subtitulo: string, texto: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      subHeader: subtitulo,
+      message: texto,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {},
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+          handler: () => {
+            this.excluirProduto();
+          },
+        },
+      ],
+    });
 
-  update() {
-    this.produtoFs.updateProduto(this.formDetProd.value, this.id);
-    this.presentAlert('Editar', '', 'Produto alterado!');
-    this.router.navigate(['/home']);
+    await alert.present();
   }
-
-  delete() {
-    this.produtoFs.deleteProduto(this.produto);
-    this.presentAlert('Excluir', '', 'Produto excluído!');
-    this.router.navigate(['/home']);
-  }
-
 }

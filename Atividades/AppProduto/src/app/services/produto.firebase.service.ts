@@ -9,15 +9,17 @@ import { Provedor } from '../models/provedor';
   providedIn: 'root'
 })
 export class ProdutoFirebaseService {
-  private path = 'produtos';
+  private provedorId = ''
+  private path =`provedores/${this.provedorId}/produtos`;
 
   constructor(
     private afs: AngularFirestore,
     private aFStorage: AngularFireStorage,) { }
 
   createProduto(produto: Produto) {
+    console.log(produto.provedor.id)
     return this.afs
-    .collection(this.path)
+    .collection(`provedores/${produto.provedor.id}/produtos`)
     .add({
       nome: produto.nome,
       provedor: produto.provedor,
@@ -30,13 +32,15 @@ export class ProdutoFirebaseService {
     });
   }
 
-  readProdutos() {
+  readProdutos(provedor: Provedor) {
+    this.provedorId = provedor.id
     return this.afs
     .collection(this.path)
     .snapshotChanges();
   }
 
-  readProduto(id: string) {
+  readProduto(provedor: Provedor, id: string) {
+    this.provedorId = provedor.id
     return this.afs
     .collection(this.path)
     .doc(id)
@@ -44,6 +48,7 @@ export class ProdutoFirebaseService {
   }
 
   updateProduto(produto: Produto, id: string) {
+    this.provedorId = produto.provedor.id
     return this.afs
     .collection(this.path)
     .doc(id)
@@ -60,6 +65,7 @@ export class ProdutoFirebaseService {
   }
 
   deleteProduto(produto: Produto) {
+    this.provedorId = produto.provedor.id
     return this.afs
     .collection(this.path)
     .doc(produto.id)
@@ -67,10 +73,11 @@ export class ProdutoFirebaseService {
   }
 
   deleteByProvedor(provedor: Provedor) {
-    //
+    this.provedorId = provedor.id
   }
 
   enviarImg(img: any, produto: Produto) {
+    this.provedorId = produto.provedor.id
     const file = img.item(0);
     if(file.type.split('/')[0] !== 'image') {
       console.error('Tipo não suportado!');
@@ -88,6 +95,34 @@ export class ProdutoFirebaseService {
       uploadedFileURL.subscribe((res) => {
         produto.downloadURL = res;
         this.createProduto(produto);
+      });
+    }))
+    .subscribe();
+    return task;
+  }
+
+  updateImg(img: any, produto: Produto) {
+    this.provedorId = produto.provedor.id
+
+    const updateImgRef = this.aFStorage.refFromURL(produto.downloadURL).delete()
+
+    const file = img.item(0);
+    if(file.type.split('/')[0] !== 'image') {
+      console.error('Tipo não suportado!');
+      return;
+    }
+
+    const path = `images/${new Date().getTime()}_${file.name}`;
+    const fileRef = this.aFStorage.ref(path);
+    const task = this.aFStorage.upload(path, file);
+
+    task
+    .snapshotChanges()
+    .pipe(finalize(() => {
+      const uploadedFileURL = fileRef.getDownloadURL();
+      uploadedFileURL.subscribe((res) => {
+        produto.downloadURL = res;
+        this.updateProduto(produto, produto.id);
       });
     }))
     .subscribe();

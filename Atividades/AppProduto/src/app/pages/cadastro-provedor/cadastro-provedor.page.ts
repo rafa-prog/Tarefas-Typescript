@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
 
 
@@ -19,12 +19,9 @@ export class CadastroProvedorPage implements OnInit {
 
   constructor(private router: Router,
   private formBuilder: FormBuilder,
+  private loadingCtrl: LoadingController,
   private alertController: AlertController,
   private provedorFs: ProvedorFirebaseService) { }
-
-  get errorControl() {
-    return this.formCadProv.controls;
-  }
 
   ngOnInit() {
     this.data = new Date().toISOString();
@@ -44,14 +41,43 @@ export class CadastroProvedorPage implements OnInit {
       });
   }
 
+  get errorControl() {
+    return this.formCadProv.controls;
+  }
+
   submitForm(): boolean {
     this.isSubmitted = true;
     if(!this.formCadProv.valid) {
-      this.presentAlert('Cadastro', 'Erro', 'Todos os campos são obrigatórios!');
+      this.presentAlert('Provedor', 'Erro', 'Todos os campos são obrigatórios!');
       return false;
     }
 
     this.cadastrar();
+  }
+
+  private cadastrar() {
+    this.showLoading('Aguarde', 10000);
+    this.provedorFs.createProvedor(this.formCadProv.value)
+    .then(() => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Provedor', 'Cadastro', 'Provedor cadastrado!');
+      this.router.navigate(['/provedores']);
+    })
+    .catch((err) => {
+      this.loadingCtrl.dismiss();
+      this.presentAlert('Provedor', 'Erro', 'Erro no cadastro!');
+      console.log(err);
+    });
+  }
+
+  async showLoading(mensagem: string, duracao: number) {
+    const loading = await this.loadingCtrl.create({
+      message: mensagem,
+      duration: duracao,
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
   }
 
   async presentAlert(titulo: string, subtitulo: string, texto: string) {
@@ -64,11 +90,4 @@ export class CadastroProvedorPage implements OnInit {
 
     await alert.present();
   }
-
-  cadastrar() {
-    this.provedorFs.createProvedor(this.formCadProv.value);
-    this.presentAlert('Cadastro', '', 'Provedor registrado!');
-    this.router.navigate(['/provedores']);
-  }
-
 }
