@@ -9,6 +9,7 @@ import { ProdutoFirebaseService } from 'src/app/services/produto.firebase.servic
 import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
 
 
+
 @Component({
   selector: 'app-detalhes-produto',
   templateUrl: './detalhes-produto.page.html',
@@ -19,9 +20,13 @@ export class DetalhesProdutoPage implements OnInit {
 
   formDetProd: FormGroup;
   produto: Produto;
+  provedor: any;
 
   provedores: Provedor[];
+  provedorId: string;
+  upload:boolean;
   imagem: any;
+  link: string
   data: string;
 
   isSubmitted = false;
@@ -43,32 +48,41 @@ export class DetalhesProdutoPage implements OnInit {
     console.log(this.provedores);
   }
 
-  reuploadFile(imagem: any) {
-    this.imagem = imagem.files;
-  }
-
-  ngOnInit() {
+  async ngOnInit() {
     const nav = this.router.getCurrentNavigation();
     this.produto = nav.extras.state.objProd;
     this.data = new Date().toISOString();
 
-    console.log(this.produto);
+    this.provedorFs.readProvedores()
+    .subscribe(res => {
+      this.provedores = res.map(p => ({
+          id: p.payload.doc.id,
+          ...p.payload.doc.data() as Provedor
+        } as Provedor));
+    });
+    
+    this.provedorId = this.produto.provedor.toString()
+    
+    this.provedorFs.readProvedor(this.provedorId)
+    .subscribe(data=>{
+      this.produto.provedor = data as Provedor;
+    });
 
-    this.disabled = true;
+    this.upload = false;
+    this.disabled = true
     this.formInit();
   }
 
   formInit() {
     this.formDetProd = this.formBuilder.group(
-      {
+      { 
         nome: [this.produto.nome, [Validators.required, Validators.minLength(4)]],
-        provedor: ['', [Validators.required]],
+        provedor: [this.provedorId, [Validators.required]],
         info: [this.produto.info, [Validators.required]],
         quantidade: [this.produto.quantidade, [Validators.required, Validators.min(1)]],
         preco: [this.produto.preco, [Validators.required, Validators.min(0.1)]],
         retornoProvedor: [this.produto.retornoProvedor, [Validators.required, Validators.min(0), Validators.max(100)]],
         dataCompra: [this.produto.dataCompra, [Validators.required]],
-        imagem: [this.produto.downloadURL, [Validators.required]],
       });
   }
 
@@ -97,22 +111,37 @@ export class DetalhesProdutoPage implements OnInit {
 
   uploadFile(imagem: any) {
     this.imagem = imagem.files;
+    this.upload = true;
   }
 
   private salvar() {
     this.showLoading('Aguarde', 10000);
-    this.produtoFs.updateImg(this.imagem, this.formDetProd.value)
-    .then(() => {
-      this.loadingCtrl.dismiss();
-      this.presentAlert('Detalhes', 'Atualizar', 'Produto atualizado');
-      this.router.navigate(['/produtos']);
-    })
-    .catch((err) => {
-      this.loadingCtrl.dismiss();
-      this.presentAlert('Detalhes', 'Erro', 'Erro ao atualizar!');
-      console.log(err);
-    });
-  }
+    if(this.upload) {
+      this.produtoFs.updateImg(this.imagem, this.produto.downloadURL, this.formDetProd.value, this.formDetProd.controls['provedor'].value, this.produto.id)
+      .then(() => {
+        this.loadingCtrl.dismiss();
+        this.presentAlert('Detalhes', 'Atualizar', 'Produto atualizado');
+        this.router.navigate(['/produtos']);
+      })
+      .catch((err) => {
+        this.loadingCtrl.dismiss();
+        this.presentAlert('Detalhes', 'Erro', 'Erro ao atualizar!');
+        console.log(err);
+      });
+    }else {
+      this.produtoFs.updateProduto(this.produto.downloadURL, this.formDetProd.value, this.formDetProd.controls['provedor'].value, this.produto.id)
+      .then(() => {
+        this.loadingCtrl.dismiss();
+        this.presentAlert('Detalhes', 'Atualizar', 'Produto atualizado');
+        this.router.navigate(['/produtos']);
+      })
+      .catch((err) => {
+        this.loadingCtrl.dismiss();
+        this.presentAlert('Detalhes', 'Erro', 'Erro ao atualizar!');
+        console.log(err);
+      });
+      }
+    }
 
   private excluirProduto() {
     this.produtoFs.deleteProduto(this.produto)

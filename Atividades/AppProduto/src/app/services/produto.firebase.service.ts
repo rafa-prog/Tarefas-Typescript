@@ -4,7 +4,6 @@ import { where } from 'firebase/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Produto } from '../models/produto';
 import { finalize } from 'rxjs/operators';
-import { Provedor } from '../models/provedor';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +13,15 @@ export class ProdutoFirebaseService {
 
   constructor(
     private afs: AngularFirestore,
+    //private provedorFs: ProvedorFirebaseService,
     private aFStorage: AngularFireStorage,) { }
 
-  createProduto(produto: Produto) {
+  createProduto(produto: Produto, provedor: any) {
     return this.afs
     .collection(this.path)
     .add({
       nome: produto.nome,
-      provedor: `provedores/${produto.id}`,
+      provedor: provedor,
       info: produto.info,
       quantidade: produto.quantidade,
       preco: produto.preco,
@@ -44,19 +44,19 @@ export class ProdutoFirebaseService {
     .valueChanges();
   }
 
-  updateProduto(produto: Produto, id: string) {
+  updateProduto(link: string, produto: Produto, provedor: any, id: string) {
     return this.afs
     .collection(this.path)
     .doc(id)
     .update({
       nome: produto.nome,
-      provedor: produto.provedor,
+      provedor: provedor,
       info: produto.info,
       quantidade: produto.quantidade,
       preco: produto.preco,
       retornoProvedor: produto.retornoProvedor,
       dataCompra: produto.dataCompra,
-      downloadURL: produto.downloadURL
+      downloadURL: link
     });
   }
 
@@ -67,11 +67,7 @@ export class ProdutoFirebaseService {
     .delete();
   }
 
-  deleteByProvedor(provedor: Provedor) {
-    //
-  }
-
-  enviarImg(img: any, produto: Produto) {
+  enviarImg(img: any, produto: Produto, provedorId: string) {
     const file = img.item(0);
     if(file.type.split('/')[0] !== 'image') {
       console.error('Tipo não suportado!');
@@ -88,16 +84,34 @@ export class ProdutoFirebaseService {
       const uploadedFileURL = fileRef.getDownloadURL();
       uploadedFileURL.subscribe((res) => {
         produto.downloadURL = res;
-        this.createProduto(produto);
-        console.log(produto.provedor.id);
+        
+        this.createProduto(produto, provedorId);
       });
     }))
     .subscribe();
     return task;
   }
 
-  updateImg(img: any, produto: Produto) {
-    const updateImgRef = this.aFStorage.refFromURL(produto.downloadURL).delete();
+  updateImg(img: any, link: string, produto: Produto, provedor: any, id: string) {
+
+    const firePath = 'https://firebasestorage.googleapis.com/v0/b/appproduto-5be2b.appspot.com/o/'
+    
+    let imagePath:string = link.replace(firePath,"");
+
+    const indexOfEndPath = imagePath.indexOf("?");
+
+    imagePath = imagePath.substring(0,indexOfEndPath);
+    
+    imagePath = imagePath.replace("%2F","/");
+
+    const deleteImg = 
+    this.aFStorage.storage.ref(imagePath)
+    .delete()
+    .then()
+    .catch((err) => {
+      console.error(err)
+    })
+
 
     const file = img.item(0);
     if(file.type.split('/')[0] !== 'image') {
@@ -115,7 +129,7 @@ export class ProdutoFirebaseService {
       const uploadedFileURL = fileRef.getDownloadURL();
       uploadedFileURL.subscribe((res) => {
         produto.downloadURL = res;
-        this.updateProduto(produto, produto.id);
+        this.updateProduto(res, produto, provedor, id);
       });
     }))
     .subscribe();

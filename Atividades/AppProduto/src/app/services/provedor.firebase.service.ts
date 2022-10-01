@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { map } from 'rxjs/internal/operators/map';
 import { Provedor } from '../models/provedor';
 
 @Injectable({
@@ -31,8 +32,7 @@ export class ProvedorFirebaseService {
   }
 
   readProvedor(id: string) {
-    return this.afs
-    .collection(this.path)
+    return this.afs.collection(this.path)
     .doc(id)
     .valueChanges();
   }

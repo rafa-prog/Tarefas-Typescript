@@ -29,7 +29,7 @@
     <ion-item disabled="{{ disabled }}">
       <ion-label position="floating">provedor*</ion-label>
       <ion-select formControlName="provedor">
-        <ion-select-option *ngFor="let provedor of provedores" value="{{ provedor }}">{{ provedor.nome }}</ion-select-option>
+        <ion-select-option *ngFor="let provedor of provedores" value="{{ provedor.id }}">{{ provedor.nome }}</ion-select-option>
       </ion-select>
       <div *ngIf="((errorControl.provedor.touched) ||
       (errorControl.provedor.dirty) && errorControl.provedor.errors)">
@@ -99,12 +99,16 @@
 
     <ion-item disabled="{{ disabled }}">
       <ion-button size="default" color="sucess" shape="round">
-        <input type="file" formControlName=imagem (change)="reuploadFile($event.target)"/>
+        <input type="file" (change)="uploadFile($event.target)"/>
       </ion-button>
     </ion-item>
 
+<<<<<<< HEAD
     <ion-button disabled="{{ disabled }}"  type="submit"
     expand="block" fill="outline">Editar</ion-button>
+=======
+    <ion-button type="submit" expand="block" fill="outline">Salvar</ion-button>
+>>>>>>> ce47dc8 (AppProdutos)
   </form>
 
   <ion-button disabled="{{ disabled }}" color="danger" (click)="excluir()"

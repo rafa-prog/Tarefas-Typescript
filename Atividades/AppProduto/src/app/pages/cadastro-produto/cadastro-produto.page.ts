@@ -76,7 +76,7 @@ export class CadastroProdutoPage implements OnInit {
 
   private cadastrar() {
     this.showLoading('Aguarde', 10000);
-    this.produtoFs.enviarImg(this.imagem, this.formCadProd.value)
+    this.produtoFs.enviarImg(this.imagem, this.formCadProd.value, this.formCadProd.controls['provedor'].value)
     .then(() => {
       this.loadingCtrl.dismiss();
       this.presentAlert('Produto', 'Cadastro', 'Produto cadastrado!');
