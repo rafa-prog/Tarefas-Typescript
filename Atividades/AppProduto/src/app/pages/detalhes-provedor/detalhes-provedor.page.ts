@@ -93,7 +93,6 @@ export class DetalhesProvedorPage implements OnInit {
   }
 
   private excluirProvedor() {
-    this.produtoFs.deleteByProvedor(this.provedor);
     this.provedorFs.deleteProvedor(this.provedor)
     .then(() => {
       this.presentAlert('Agenda', 'Excluir', 'Exclusão do contato realizada!');
