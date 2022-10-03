@@ -9,7 +9,6 @@ import { ProdutoFirebaseService } from 'src/app/services/produto.firebase.servic
 import { ProvedorFirebaseService } from 'src/app/services/provedor.firebase.service';
 
 
-
 @Component({
   selector: 'app-detalhes-produto',
   templateUrl: './detalhes-produto.page.html',
@@ -91,7 +90,7 @@ export class DetalhesProdutoPage implements OnInit {
   }
 
   excluir() {
-    this.presentAlertConfirm('Detalhes', 'Excluir',
+    this.presentAlertConfirm('Detalhes', 'Produto',
     'Você realmente deseja exlcuir o produto?');
   }
 
@@ -102,7 +101,7 @@ export class DetalhesProdutoPage implements OnInit {
   submitForm(): boolean {
     this.isSubmitted = true;
     if(!this.formDetProd.valid) {
-      this.presentAlert('Detalhes', 'Erro', 'Todos os campos são obrigatórios!');
+      this.presentAlert('Detalhes', 'Produto', 'Todos os campos são obrigatórios!');
       return false;
     }
 
@@ -120,12 +119,12 @@ export class DetalhesProdutoPage implements OnInit {
       this.produtoFs.updateImg(this.imagem, this.produto.downloadURL, this.formDetProd.value, this.formDetProd.controls['provedor'].value, this.produto.id)
       .then(() => {
         this.loadingCtrl.dismiss();
-        this.presentAlert('Detalhes', 'Atualizar', 'Produto atualizado');
+        this.presentAlert('Detalhes', 'Produto', 'Edição realizada com sucesso');
         this.router.navigate(['/produtos']);
       })
       .catch((err) => {
         this.loadingCtrl.dismiss();
-        this.presentAlert('Detalhes', 'Erro', 'Erro ao atualizar!');
+        this.presentAlert('Detalhes', 'Produto', 'Produto não encontrado!');
         console.log(err);
       });
     }else {
@@ -146,11 +145,11 @@ export class DetalhesProdutoPage implements OnInit {
   private excluirProduto() {
     this.produtoFs.deleteProduto(this.produto)
     .then(() => {
-      this.presentAlert('Detalhes', 'Excluir', 'Exclusão do produto realizada!');
+      this.presentAlert('Detalhes', 'Produto', 'Exclusão do produto realizada!');
       this.router.navigate(['/provedores']);
     })
     .catch((err) => {
-      this.presentAlert('Detalhes', 'Erro', 'Produto não encontrado!');
+      this.presentAlert('Detalhes', 'Produto', 'Produto não encontrado!');
       console.log(err);
     });
   }

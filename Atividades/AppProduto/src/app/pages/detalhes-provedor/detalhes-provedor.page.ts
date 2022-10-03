@@ -60,7 +60,7 @@ export class DetalhesProvedorPage implements OnInit {
   submitForm(): boolean {
     this.isSubmitted = true;
     if(!this.formDetProv.valid) {
-      this.presentAlert('Agenda', 'Erro', 'Todos os campos são obrigatórios!');
+      this.presentAlert('Detalhes', 'Provedor', 'Todos os campos são obrigatórios!');
       return false;
     }
 
@@ -72,8 +72,8 @@ export class DetalhesProvedorPage implements OnInit {
   }
 
   excluir() {
-    this.presentAlertConfirm('Agenda', 'Excluir contato',
-    'Você realmente deseja exlcuir contato?');
+    this.presentAlertConfirm('Detalhes', 'Provedor',
+    'Você realmente deseja excluir provedor?');
   }
 
   salvar() {
@@ -82,12 +82,12 @@ export class DetalhesProvedorPage implements OnInit {
     this.provedorFs.updateProvedor(this.formDetProv.value, this.provedor.id)
     .then(() => {
       this.loadingCtrl.dismiss();
-      this.presentAlert('Agenda', '', 'Edição realizada com sucesso');
+      this.presentAlert('Detalhes', 'Provedor', 'Edição realizada com sucesso');
       this.router.navigate(['/provedores']);
     })
     .catch((err) => {
       this.loadingCtrl.dismiss();
-      this.presentAlert('Agenda', 'Erro', 'Contato não encontrado!');
+      this.presentAlert('Detalhes', 'Provedor', 'Provedor não encontrado!');
       console.log(err);
     });
   }
@@ -95,11 +95,11 @@ export class DetalhesProvedorPage implements OnInit {
   private excluirProvedor() {
     this.provedorFs.deleteProvedor(this.provedor)
     .then(() => {
-      this.presentAlert('Agenda', 'Excluir', 'Exclusão do contato realizada!');
+      this.presentAlert('Detalhes', 'Provedor', 'Exclusão do provedor realizada!');
       this.router.navigate(['/provedores']);
     })
     .catch((err) => {
-      this.presentAlert('Agenda', 'Erro', 'Contato não encontrado!');
+      this.presentAlert('Detalhes', 'Provedor', 'Provedor não encontrado!');
       console.log(err);
     });
   }
